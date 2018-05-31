@@ -1,5 +1,5 @@
-#[[
- * CMakeLists.txt
+/*
+ * menu.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -14,20 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-]]
+ */
 
-add_executable(shadow
-		"${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/res.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
-)
+#ifndef SHADOW_MENU_H_
+#define SHADOW_MENU_H_
+#include "main.h"
 
-set_target_properties(shadow PROPERTIES C_STANDARD 99)
-target_compile_options(shadow PRIVATE -Wall -Wpedantic)
-target_link_libraries(shadow PRIVATE mint)
+void menu_scene(scene_state_t state, double time);
 
-if (CMAKE_BUILD_TYPE STREQUAL Release AND WIN32)
-	set_target_properties(shadow PROPERTIES LINK_FLAGS -mwindows)
-endif()
+#endif
