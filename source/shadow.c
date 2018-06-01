@@ -18,9 +18,8 @@
  
 #include "shadow.h"
 #include "res.h"
-#include <math.h>
 
-#define RECT_COUNT 30
+#define RECT_COUNT 10
 
 typedef struct shadow_t {
 	interp_t x;
@@ -61,6 +60,7 @@ void shadow_update(double time) {
 			double interp = time / RECT_COUNT * j;
 			double angle = mint_random(0, M_PI * 2);
 			double dist = mint_random(0, 16);
+
 			rect_t* rect = mint_array_add(g_rects, -1, 1);
 			rect->x = interp_value(&shadow->x, interp) + cos(angle) * dist;
 			rect->y = interp_value(&shadow->y, interp) + sin(angle) * dist;
@@ -71,11 +71,13 @@ void shadow_update(double time) {
 	for (int i = 0; i < mint_array_size(g_rects); ++i) {
 		rect_t* rect = mint_array_get(g_rects, i);
 		interp_update(&rect->alpha);
-		rect->alpha.v -= time * 2;
-		if (rect->alpha.v < 0) {
+
+		if (rect->alpha.v == 0) {
 			mint_array_remove(g_rects, i, 1);
 			--i;
+			continue;
 		}
+		rect->alpha.v = max(rect->alpha.v - time, 0);
 	}
 }
 

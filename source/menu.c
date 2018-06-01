@@ -21,7 +21,6 @@
 #include "button.h"
 #include "player.h"
 #include "game.h"
-#include <math.h>
 
 void menu_scene(scene_state_t state, double time) {
 	static interp_t fade;
@@ -45,15 +44,12 @@ void menu_scene(scene_state_t state, double time) {
 		button_update(&btn_easy, time);
 
 		if (exit) {
-			fade.v += time;
-			if (fade.v > 1) {
+			if (fade.v == 1) {
 				scene_set(game_scene);
 			}
+			fade.v = min(fade.v + time, 1);
 		} else {
-			fade.v -= time;
-			if (fade.v < 0) {
-				fade.v = 0;
-			}
+			fade.v = max(fade.v - time, 0);
 		}
 
 	} else if (state == SCENE_DRAW) {

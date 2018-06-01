@@ -20,23 +20,19 @@
 #include "res.h"
 #include "player.h"
 #include "shadow.h"
-#include <math.h>
 
 void game_scene(scene_state_t state, double time) {
-	static interp_t fade_in;
+	static interp_t fade;
 
 	if (state == SCENE_INIT) {
 
-		interp_init(&fade_in, 1);
+		interp_init(&fade, 1);
 		shadow_init();
 
 	} else if (state == SCENE_UPDATE) {
 
-		interp_update(&fade_in);
-		fade_in.v -= time;
-		if (fade_in.v < 0) {
-			fade_in.v = 0;
-		}
+		interp_update(&fade);
+		fade.v = max(fade.v - time, 0);
 		player_update(time);
 		shadow_update(time);
 
@@ -52,7 +48,7 @@ void game_scene(scene_state_t state, double time) {
 		mintg_size(&width, &height);
 		mintg_push();
 		mintg_scale(width, height);
-		mintg_color(1, 1, 1, sqrt(interp_value(&fade_in, time)));
+		mintg_color(1, 1, 1, sqrt(interp_value(&fade, time)));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
 

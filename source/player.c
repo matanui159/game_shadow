@@ -17,7 +17,6 @@
  */
  
 #include "player.h"
-#include <math.h>
 
 static struct {
 	double time;
@@ -31,6 +30,7 @@ void player_update(double time) {
 	interp_update(&g_player.y);
 	interp_update(&g_player.scale);
 	mintg_input_cursor(&g_player.x.v, &g_player.y.v);
+
 	g_player.time += time;
 	double s0 = cos(g_player.time * 20 + M_PI);
 	double s1 = cos(g_player.time * 10);
