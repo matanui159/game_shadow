@@ -19,6 +19,7 @@
 #include "menu.h"
 #include "res.h"
 #include "button.h"
+#include "player.h"
 #include "game.h"
 #include <math.h>
 
@@ -49,6 +50,7 @@ void menu_scene(scene_state_t state, double time) {
 				scene_set(game_scene);
 			}
 		}
+		player_update(time);
 		button_update(&btn_easy, time);
 
 	} else if (state == SCENE_DRAW) {
@@ -65,13 +67,7 @@ void menu_scene(scene_state_t state, double time) {
 		button_draw(&btn_normal, time);
 //		button_draw(&btn_easy, time);
 
-		double x, y;
-		mintg_input_cursor(&x, &y);
-		mintg_push();
-		mintg_translate(x, y);
-		mintg_color(0.6, 0, 0.2, 1);
-		mintg_image_draw(res_image_arrow, NULL);
-		mintg_pop();
+		player_draw(res_image_arrow, 0, time);
 
 		int width, height;
 		mintg_size(&width, &height);

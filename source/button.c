@@ -18,6 +18,7 @@
  
 #include "button.h"
 #include "res.h"
+#include "player.h"
 #include <math.h>
 
 _Bool button_update(button_t* button, double time) {
@@ -30,10 +31,10 @@ _Bool button_update(button_t* button, double time) {
 	double x = button->x - width / 2.0;
 	double y = button->y - height / 2.0;
 
-	double cx, cy;
-	mintg_input_cursor(&cx, &cy);
+	double px, py;
+	player_pos(&px, &py);
 	mintg_input_state_t state = mintg_input_key_state(MINTG_INPUT_LBUTTON, &button->state);
-	if (cx > x && cx < x + width && cy > y && cy < y + height) {
+	if (px > x && px < x + width && py > y && py < y + height) {
 		button->hover = 1;
 		if (mintg_input_key(MINTG_INPUT_LBUTTON)) {
 			button->scale.v = 0.9;

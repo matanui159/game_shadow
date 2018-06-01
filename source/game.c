@@ -18,13 +18,11 @@
  
 #include "game.h"
 #include "res.h"
+#include "player.h"
 #include <math.h>
 
 void game_scene(scene_state_t state, double time) {
 	static interp_t fade_in;
-	static interp_t heart_x;
-	static interp_t heart_y;
-	static interp_t heart_angle;
 
 	if (state == SCENE_INIT) {
 
@@ -33,28 +31,18 @@ void game_scene(scene_state_t state, double time) {
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade_in);
-		interp_update(&heart_x);
-		interp_update(&heart_y);
-		interp_update(&heart_angle);
 		fade_in.v -= time;
 		if (fade_in.v < 0) {
 			fade_in.v = 0;
 		}
-		mintg_input_cursor(&heart_x.v, &heart_y.v);
-		heart_angle.v += (heart_x.v - heart_x.old) / time / 50;
-		heart_angle.v = (heart_angle.v / pow(2, time * 50));
+		player_update(time);
 
 	} else if (state == SCENE_DRAW) {
 
 		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-		mintg_push();
-		mintg_translate(interp_value(&heart_x, time), interp_value(&heart_y, time));
-		mintg_rotate(interp_value(&heart_angle, time));
-		mintg_color(0.6, 0, 0.2, 1);
-		mintg_image_draw(res_image_heart, NULL);
-		mintg_pop();
+		player_draw(res_image_heart, 1, time);
 
 		int width, height;
 		mintg_size(&width, &height);
