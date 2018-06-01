@@ -24,34 +24,37 @@
 #include <math.h>
 
 void menu_scene(scene_state_t state, double time) {
-	static interp_t fade_in;
-	static interp_t fade_out;
+	static interp_t fade;
+	static _Bool exit;
 
 	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
 	static button_t btn_easy = {"EASY", "Get help", 0, -100};
 
 	if (state == SCENE_INIT) {
 
-		interp_init(&fade_in, 1);
-		interp_init(&fade_out, 0);
+		interp_init(&fade, 1);
+		exit = 0;
 
 	} else if (state == SCENE_UPDATE) {
 
-		interp_update(&fade_in);
-		interp_update(&fade_out);
-		fade_in.v -= time;
-		if (fade_in.v < 0) {
-			fade_in.v = 0;
+		interp_update(&fade);
+		player_update(time);
+		if (button_update(&btn_normal, time)) {
+			exit = 1;
 		}
-		if (button_update(&btn_normal, time) || fade_out.v > 0) {
-			fade_out.v += time;
-			if (fade_out.v >= 1) {
-				fade_out.v = 1;
+		button_update(&btn_easy, time);
+
+		if (exit) {
+			fade.v += time;
+			if (fade.v > 1) {
 				scene_set(game_scene);
 			}
+		} else {
+			fade.v -= time;
+			if (fade.v < 0) {
+				fade.v = 0;
+			}
 		}
-		player_update(time);
-		button_update(&btn_easy, time);
 
 	} else if (state == SCENE_DRAW) {
 
@@ -73,13 +76,7 @@ void menu_scene(scene_state_t state, double time) {
 		mintg_size(&width, &height);
 		mintg_push();
 		mintg_scale(width, height);
-		mintg_color(1, 1, 1, sqrt(interp_value(&fade_in, time)));
-		mintg_image_draw(res_image_rect, NULL);
-		mintg_pop();
-
-		mintg_push();
-		mintg_scale(width, height);
-		mintg_color(1, 1, 1, sqrt(interp_value(&fade_out, time)));
+		mintg_color(1, 1, 1, sqrt(interp_value(&fade, time)));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
 

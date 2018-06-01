@@ -19,6 +19,7 @@
 #include "game.h"
 #include "res.h"
 #include "player.h"
+#include "shadow.h"
 #include <math.h>
 
 void game_scene(scene_state_t state, double time) {
@@ -27,6 +28,7 @@ void game_scene(scene_state_t state, double time) {
 	if (state == SCENE_INIT) {
 
 		interp_init(&fade_in, 1);
+		shadow_init();
 
 	} else if (state == SCENE_UPDATE) {
 
@@ -36,13 +38,15 @@ void game_scene(scene_state_t state, double time) {
 			fade_in.v = 0;
 		}
 		player_update(time);
+		shadow_update(time);
 
 	} else if (state == SCENE_DRAW) {
 
 		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-		player_draw(res_image_heart, 1, time);
+//		player_draw(res_image_heart, 1, time);
+		shadow_draw(time);
 
 		int width, height;
 		mintg_size(&width, &height);
@@ -51,6 +55,10 @@ void game_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, sqrt(interp_value(&fade_in, time)));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
+
+	} else if (state == SCENE_EXIT) {
+
+		shadow_exit();
 
 	}
 }

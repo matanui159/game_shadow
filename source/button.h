@@ -25,8 +25,8 @@ typedef struct button_t {
 	const char* info;
 	double x;
 	double y;
-	interp_t scale;
 	double time;
+	interp_t scale;
 	_Bool hover;
 	_Bool state;
 } button_t;

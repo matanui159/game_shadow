@@ -1,5 +1,5 @@
-#[[
- * CMakeLists.txt
+/*
+ * shadow.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -14,22 +14,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-]]
+ */
 
-add_executable(shadow
-		"${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/res.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/player.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/shadow.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
-)
+#ifndef SHADOW__H_
+#define SHADOW__H_
+#include "main.h"
 
-set_target_properties(shadow PROPERTIES C_STANDARD 99)
-target_compile_options(shadow PRIVATE -Wall -Wpedantic)
-target_link_libraries(shadow PRIVATE mint)
+void shadow_init();
+void shadow_update(double time);
+void shadow_draw(double time);
+void shadow_exit();
 
-if (CMAKE_BUILD_TYPE STREQUAL Release AND WIN32)
-	set_target_properties(shadow PROPERTIES LINK_FLAGS -mwindows)
-endif()
+#endif

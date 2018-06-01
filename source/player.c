@@ -20,10 +20,10 @@
 #include <math.h>
 
 static struct {
+	double time;
 	interp_t x;
 	interp_t y;
 	interp_t scale;
-	double time;
 } g_player;
 
 void player_update(double time) {
