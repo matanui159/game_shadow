@@ -18,12 +18,16 @@
  
 #include "shadow.h"
 #include "res.h"
-
-#define RECT_COUNT 10
+#include "player.h"
 
 typedef struct shadow_t {
 	interp_t x;
 	interp_t y;
+	double vx;
+	double vy;
+	double tx;
+	double ty;
+	int state;
 } shadow_t;
 
 typedef struct rect_t {
@@ -37,14 +41,22 @@ static mint_array_t* g_rects;
 
 void shadow_init() {
 	if (g_shadows == NULL) {
-		g_shadows = mint_array_create(sizeof(rect_t));
-		mint_array_add(g_shadows, -1, 1);
+		g_shadows = mint_array_create(sizeof(shadow_t));
+		for (int i = 0; i < 10; ++i) {
+			mint_array_add(g_shadows, -1, 1);
+		}
 	}
 
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
+		double angle = mint_random(0, M_PI * 2);
 		shadow_t* shadow = mint_array_get(g_shadows, i);
-		interp_init(&shadow->x, 0);
-		interp_init(&shadow->y, 0);
+		interp_init(&shadow->x, cos(angle) * 600);
+		interp_init(&shadow->y, sin(angle) * 600);
+		shadow->vx = 0;
+		shadow->vy = 0;
+		shadow->tx = 0;
+		shadow->ty = 0;
+		shadow->state = 0;
 	}
 	g_rects = mint_array_create(sizeof(rect_t));
 }
@@ -54,10 +66,22 @@ void shadow_update(double time) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 		interp_update(&shadow->x);
 		interp_update(&shadow->y);
-		mintg_input_cursor(&shadow->x.v, &shadow->y.v);
 
-		for (int j = 0; j < RECT_COUNT; ++j) {
-			double interp = time / RECT_COUNT * j;
+		player_pos(&shadow->tx, &shadow->ty);
+
+		double dx = shadow->tx - shadow->x.v;
+		double dy = shadow->ty - shadow->y.v;
+		double accel = time * 300 / sqrt(dx * dx + dy * dy);
+		shadow->vx = min(shadow->vx + dx * accel, 300);
+		shadow->vy = min(shadow->vy + dy * accel, 300);
+		shadow->vx *= pow(0.3, time);
+		shadow->vy *= pow(0.3, time);
+		shadow->x.v += shadow->vx * time;
+		shadow->y.v += shadow->vy * time;
+
+		const int rect_count = 10;
+		for (int j = 0; j < rect_count; ++j) {
+			double interp = time / rect_count * j;
 			double angle = mint_random(0, M_PI * 2);
 			double dist = mint_random(0, 16);
 
@@ -82,7 +106,7 @@ void shadow_update(double time) {
 }
 
 void shadow_draw(double time) {
-	for (int i = 0; i < mint_array_size(g_rects); ++i) {\
+	for (int i = 0; i < mint_array_size(g_rects); ++i) {
 		rect_t* rect = mint_array_get(g_rects, i);
 		mintg_push();
 		mintg_translate(rect->x, rect->y);

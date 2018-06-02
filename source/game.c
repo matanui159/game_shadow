@@ -41,7 +41,7 @@ void game_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-//		player_draw(res_image_heart, 1, time);
+		player_draw(res_image_heart, 1, time);
 		shadow_draw(time);
 
 		int width, height;
