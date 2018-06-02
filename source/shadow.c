@@ -20,6 +20,12 @@
 #include "res.h"
 #include "player.h"
 
+typedef enum shadow_state_t {
+	SHADOW_INIT,
+	SHADOW_MOVE,
+	SHADOW_ATTACK
+} shadow_state_t;
+
 typedef struct shadow_t {
 	interp_t x;
 	interp_t y;
@@ -27,14 +33,13 @@ typedef struct shadow_t {
 	double vy;
 	double tx;
 	double ty;
-	_Bool attack;
+	shadow_state_t state;
 } shadow_t;
 
 typedef struct rect_t {
 	double x;
 	double y;
 	interp_t alpha;
-	_Bool attack;
 } rect_t;
 
 static mint_array_t* g_shadows = NULL;
@@ -55,9 +60,7 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		for (int i = 0; i < 10; ++i) {
-			mint_array_add(g_shadows, -1, 1);
-		}
+		mint_array_add(g_shadows, -1, 1);
 	}
 
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
@@ -69,7 +72,7 @@ void shadow_init() {
 		shadow->vy = 0;
 		shadow->tx = shadow->x.v;
 		shadow->ty = shadow->y.v;
-		shadow->attack = 1;
+		shadow->state = SHADOW_INIT;
 	}
 	g_rects = mint_array_create(sizeof(rect_t));
 }
@@ -82,25 +85,44 @@ void shadow_update(double time) {
 
 		double dx, dy;
 		double dist = shadow_dist(shadow, shadow->tx, shadow->ty, &dx, &dy);
-		double accel = time * 500 / dist;
-		shadow->vx = min(shadow->vx + dx * accel, 500);
-		shadow->vy = min(shadow->vy + dy * accel, 500);
-		shadow->vx *= pow(0.1, time);
-		shadow->vy *= pow(0.1, time);
+		if (dist == 0) {
+			dist = 1;
+		}
+		double accel = time * 300 / dist;
+		shadow->vx = min(shadow->vx + dx * accel, 300);
+		shadow->vy = min(shadow->vy + dy * accel, 300);
+		shadow->vx *= pow(0.3, time);
+		shadow->vy *= pow(0.3, time);
 		shadow->x.v += shadow->vx * time;
 		shadow->y.v += shadow->vy * time;
 
 		if (dist < 32) {
 			double px, py;
 			player_pos(&px, &py);
-			shadow->attack = !shadow->attack;
-			if (shadow->attack) {
-				shadow->tx = px * 2 - shadow->x.v;
-				shadow->ty = py * 2 - shadow->y.v;
-			} else {
-				double angle = mint_random(0, M_PI * 2);
-				shadow->tx = px + cos(angle) * 100;
-				shadow->ty = py + sin(angle) * 100;
+			switch (shadow->state) {
+				case SHADOW_ATTACK:;
+					shadow_t* child = mint_array_add(g_shadows, -1, 1);
+					shadow = mint_array_get(g_shadows, i);
+					interp_init(&child->x, shadow->x.v);
+					interp_init(&child->y, shadow->y.v);
+					child->vx = shadow->vx;
+					child->vy = shadow->vx;
+					child->tx = child->x.v;
+					child->ty = child->y.v;
+					child->state = SHADOW_INIT;
+
+				case SHADOW_INIT:;
+					double angle = mint_random(0, M_PI * 2);
+					shadow->tx = px + cos(angle) * 100;
+					shadow->ty = py + sin(angle) * 100;
+					shadow->state = SHADOW_MOVE;
+					break;
+
+				case SHADOW_MOVE:
+					shadow->tx = px * 2 - shadow->x.v;
+					shadow->ty = py * 2 - shadow->y.v;
+					shadow->state = SHADOW_ATTACK;
+					break;
 			}
 		}
 
@@ -113,7 +135,6 @@ void shadow_update(double time) {
 			rect_t* rect = mint_array_add(g_rects, -1, 1);
 			rect->x = interp_value(&shadow->x, interp) + cos(angle) * dist;
 			rect->y = interp_value(&shadow->y, interp) + sin(angle) * dist;
-			rect->attack = shadow->attack;
 			interp_init(&rect->alpha, 0.5);
 		}
 	}

@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
 	g_scene(SCENE_INIT, 0);
 	while (mintg_update()) {
 		time += mint_timer_set(&timer, 0);
-		while (time >= GAME_CLOCK) {
+		if (time >= GAME_CLOCK) {
 			g_scene(SCENE_UPDATE, GAME_CLOCK);
-			time -= GAME_CLOCK;
+			time = fmod(time, GAME_CLOCK);
 		}
 
 		if (mintg_input_key_state(MINTG_INPUT_F1, &key_f1) == MINTG_INPUT_PRESSED) {
