@@ -27,17 +27,30 @@ typedef struct shadow_t {
 	double vy;
 	double tx;
 	double ty;
-	int state;
+	_Bool attack;
 } shadow_t;
 
 typedef struct rect_t {
 	double x;
 	double y;
 	interp_t alpha;
+	_Bool attack;
 } rect_t;
 
 static mint_array_t* g_shadows = NULL;
 static mint_array_t* g_rects;
+
+static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
+	double rx = x - shadow->x.v;
+	double ry = y - shadow->y.v;
+	if (dx != NULL) {
+		*dx = rx;
+	}
+	if (dy != NULL) {
+		*dy = ry;
+	}
+	return sqrt(rx * rx + ry * ry);
+}
 
 void shadow_init() {
 	if (g_shadows == NULL) {
@@ -54,9 +67,9 @@ void shadow_init() {
 		interp_init(&shadow->y, sin(angle) * 600);
 		shadow->vx = 0;
 		shadow->vy = 0;
-		shadow->tx = 0;
-		shadow->ty = 0;
-		shadow->state = 0;
+		shadow->tx = shadow->x.v;
+		shadow->ty = shadow->y.v;
+		shadow->attack = 1;
 	}
 	g_rects = mint_array_create(sizeof(rect_t));
 }
@@ -67,27 +80,40 @@ void shadow_update(double time) {
 		interp_update(&shadow->x);
 		interp_update(&shadow->y);
 
-		player_pos(&shadow->tx, &shadow->ty);
-
-		double dx = shadow->tx - shadow->x.v;
-		double dy = shadow->ty - shadow->y.v;
-		double accel = time * 300 / sqrt(dx * dx + dy * dy);
-		shadow->vx = min(shadow->vx + dx * accel, 300);
-		shadow->vy = min(shadow->vy + dy * accel, 300);
-		shadow->vx *= pow(0.3, time);
-		shadow->vy *= pow(0.3, time);
+		double dx, dy;
+		double dist = shadow_dist(shadow, shadow->tx, shadow->ty, &dx, &dy);
+		double accel = time * 500 / dist;
+		shadow->vx = min(shadow->vx + dx * accel, 500);
+		shadow->vy = min(shadow->vy + dy * accel, 500);
+		shadow->vx *= pow(0.1, time);
+		shadow->vy *= pow(0.1, time);
 		shadow->x.v += shadow->vx * time;
 		shadow->y.v += shadow->vy * time;
+
+		if (dist < 32) {
+			double px, py;
+			player_pos(&px, &py);
+			shadow->attack = !shadow->attack;
+			if (shadow->attack) {
+				shadow->tx = px * 2 - shadow->x.v;
+				shadow->ty = py * 2 - shadow->y.v;
+			} else {
+				double angle = mint_random(0, M_PI * 2);
+				shadow->tx = px + cos(angle) * 100;
+				shadow->ty = py + sin(angle) * 100;
+			}
+		}
 
 		const int rect_count = 10;
 		for (int j = 0; j < rect_count; ++j) {
 			double interp = time / rect_count * j;
 			double angle = mint_random(0, M_PI * 2);
-			double dist = mint_random(0, 16);
+			dist = mint_random(0, 16);
 
 			rect_t* rect = mint_array_add(g_rects, -1, 1);
 			rect->x = interp_value(&shadow->x, interp) + cos(angle) * dist;
 			rect->y = interp_value(&shadow->y, interp) + sin(angle) * dist;
+			rect->attack = shadow->attack;
 			interp_init(&rect->alpha, 0.5);
 		}
 	}
