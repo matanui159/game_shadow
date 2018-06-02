@@ -60,7 +60,7 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		mint_array_add(g_shadows, -1, 64);
+		mint_array_add(g_shadows, -1, 1);
 	}
 
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
@@ -101,7 +101,7 @@ void shadow_update(double time) {
 			player_pos(&px, &py);
 			switch (shadow->state) {
 				case SHADOW_ATTACK:
-					if (mint_array_size(g_shadows) < 30) {
+					if (mint_array_size(g_shadows) < 64) {
 						shadow_t *child = mint_array_add(g_shadows, -1, 1);
 						shadow = mint_array_get(g_shadows, i);
 						interp_init(&child->x, shadow->x.v);
