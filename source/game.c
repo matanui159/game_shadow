@@ -32,7 +32,7 @@ void game_scene(scene_state_t state, double time) {
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		fade.v = max(fade.v - time, 0);
+		fade.v -= time;
 		player_update(time);
 		shadow_update(time);
 
@@ -45,10 +45,11 @@ void game_scene(scene_state_t state, double time) {
 		shadow_draw(time);
 
 		int width, height;
+		double alpha = interp_value(&fade, time);
 		mintg_size(&width, &height);
 		mintg_push();
 		mintg_scale(width, height);
-		mintg_color(1, 1, 1, sqrt(interp_value(&fade, time)));
+		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
 

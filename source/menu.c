@@ -33,23 +33,26 @@ void menu_scene(scene_state_t state, double time) {
 
 		interp_init(&fade, 1);
 		exit = 0;
+		button_init(&btn_normal);
+		button_init(&btn_easy);
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
 		player_update(time);
-		if (button_update(&btn_normal, time)) {
+		if (button_update(&btn_normal, time) && !exit) {
+			interp_init(&fade, 0);
 			exit = 1;
 		}
 		button_update(&btn_easy, time);
 
 		if (exit) {
-			if (fade.v == 1) {
+			if (fade.v >= 1) {
 				scene_set(game_scene);
 			}
-			fade.v = min(fade.v + time, 1);
+			fade.v += time;
 		} else {
-			fade.v = max(fade.v - time, 0);
+			fade.v -= time;
 		}
 
 	} else if (state == SCENE_DRAW) {
@@ -69,10 +72,11 @@ void menu_scene(scene_state_t state, double time) {
 		player_draw(res_image_arrow, 0, time);
 
 		int width, height;
+		double alpha = interp_value(&fade, time);
 		mintg_size(&width, &height);
 		mintg_push();
 		mintg_scale(width, height);
-		mintg_color(1, 1, 1, sqrt(interp_value(&fade, time)));
+		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
 

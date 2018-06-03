@@ -19,10 +19,6 @@
 #ifndef SHADOW_MAIN_H_
 #define SHADOW_MAIN_H_
 #include <mint.h>
-#include <math.h>
-
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
 
 typedef struct interp_t {
 	double v;

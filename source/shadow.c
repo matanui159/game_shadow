@@ -18,6 +18,7 @@
  
 #include "shadow.h"
 #include "res.h"
+#include "fade_buffer.h"
 #include "player.h"
 
 typedef enum shadow_state_t {
@@ -43,7 +44,7 @@ typedef struct rect_t {
 } rect_t;
 
 static mint_array_t* g_shadows = NULL;
-static mint_array_t* g_rects;
+static fade_buffer_t fade_buffer;
 
 static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
 	double rx = x - shadow->x.v;
@@ -74,10 +75,11 @@ void shadow_init() {
 		shadow->ty = shadow->y.v;
 		shadow->state = SHADOW_INIT;
 	}
-	g_rects = mint_array_create(sizeof(rect_t));
+	fade_buffer_init(&fade_buffer);
 }
 
 void shadow_update(double time) {
+	fade_buffer_update(&fade_buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 		interp_update(&shadow->x);
@@ -89,8 +91,16 @@ void shadow_update(double time) {
 			dist = 1;
 		}
 		double accel = time * 300 / dist;
-		shadow->vx = min(shadow->vx + dx * accel, 300);
-		shadow->vy = min(shadow->vy + dy * accel, 300);
+
+		shadow->vx += dx * accel;
+		if (shadow->vx > 300) {
+			shadow->vx = 300;
+		}
+		shadow->vy += dy * accel;
+		if (shadow->vy > 300) {
+			shadow->vy = 300;
+		}
+
 		shadow->vx *= pow(0.3, time);
 		shadow->vy *= pow(0.3, time);
 		shadow->x.v += shadow->vx * time;
@@ -100,8 +110,7 @@ void shadow_update(double time) {
 			double px, py;
 			player_pos(&px, &py);
 			switch (shadow->state) {
-				case SHADOW_ATTACK:
-					if (mint_array_size(g_shadows) < 64) {
+				case SHADOW_ATTACK:;
 						shadow_t *child = mint_array_add(g_shadows, -1, 1);
 						shadow = mint_array_get(g_shadows, i);
 						interp_init(&child->x, shadow->x.v);
@@ -111,7 +120,7 @@ void shadow_update(double time) {
 						child->tx = child->x.v;
 						child->ty = child->y.v;
 						child->state = SHADOW_INIT;
-					}
+						printf("Count: %i\n", mint_array_size(g_shadows));
 
 				case SHADOW_INIT:;
 					double angle = mint_random(0, M_PI * 2);
@@ -133,39 +142,23 @@ void shadow_update(double time) {
 			double interp = time / rect_count * j;
 			double angle = mint_random(0, M_PI * 2);
 			dist = mint_random(0, 16);
-
-			rect_t* rect = mint_array_add(g_rects, -1, 1);
-			rect->x = interp_value(&shadow->x, interp) + cos(angle) * dist;
-			rect->y = interp_value(&shadow->y, interp) + sin(angle) * dist;
-			interp_init(&rect->alpha, 0.5);
+			double x = interp_value(&shadow->x, interp) + cos(angle) * dist;
+			double y = interp_value(&shadow->y, interp) + sin(angle) * dist;
+			mintg_push();
+			mintg_translate(x, y);
+			mintg_scale(8, 8);
+			mintg_color(0, 0, 0, 1);
+			mintg_image_draw(res_image_rect, NULL);
+			mintg_pop();
 		}
 	}
-
-	for (int i = 0; i < mint_array_size(g_rects); ++i) {
-		rect_t* rect = mint_array_get(g_rects, i);
-		interp_update(&rect->alpha);
-
-		if (rect->alpha.v == 0) {
-			mint_array_remove(g_rects, i, 1);
-			--i;
-			continue;
-		}
-		rect->alpha.v = max(rect->alpha.v - time, 0);
-	}
+	fade_buffer_finish();
 }
 
 void shadow_draw(double time) {
-	for (int i = 0; i < mint_array_size(g_rects); ++i) {
-		rect_t* rect = mint_array_get(g_rects, i);
-		mintg_push();
-		mintg_translate(rect->x, rect->y);
-		mintg_scale(8, 8);
-		mintg_color(0, 0, 0, interp_value(&rect->alpha, time));
-		mintg_image_draw(res_image_rect, NULL);
-		mintg_pop();
-	}
+	fade_buffer_draw(&fade_buffer, time);
 }
 
 void shadow_exit() {
-	mint_array_destroy(g_rects);
+	fade_buffer_exit(&fade_buffer);
 }

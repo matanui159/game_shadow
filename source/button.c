@@ -20,6 +20,11 @@
 #include "res.h"
 #include "player.h"
 
+void button_init(button_t* button) {
+	button->time = 0;
+	interp_init(&button->scale, 1);
+}
+
 _Bool button_update(button_t* button, double time) {
 	interp_update(&button->scale);
 	button->time += time;
@@ -32,20 +37,20 @@ _Bool button_update(button_t* button, double time) {
 
 	double px, py;
 	player_pos(&px, &py);
-	mintg_input_state_t state = mintg_input_key_state(MINTG_INPUT_LBUTTON, &button->state);
+	mintg_input_key(MINTG_INPUT_LBUTTON, &button->state);
 	if (px > x && px < x + width && py > y && py < y + height) {
 		button->hover = 1;
-		if (button->state) {
-			button->scale.v = 0.9;
+		if (button->state == MINTG_INPUT_KEYUP || button->state == MINTG_INPUT_KEYUP_EVENT) {
+			interp_init(&button->scale, 1);
 		} else {
-			button->scale.v = 1;
+			interp_init(&button->scale, 0.9);
 		}
-		if (state == MINTG_INPUT_RELEASED) {
+		if (button->state == MINTG_INPUT_KEYUP_EVENT) {
 			return 1;
 		}
 	} else {
 		button->hover = 0;
-		button->scale.v = sin(button->time * 3) * 0.05 + 0.95;
+		button->scale.v = cos(button->time * 3) * 0.05 + 0.95;
 	}
 	return 0;
 }

@@ -1,5 +1,5 @@
 /*
- * button.h
+ * fade_buffer.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,23 +16,20 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_BUTTON_H_
-#define SHADOW_BUTTON_H_
+#ifndef SHADOW_FADE_BUFFER_H_
+#define SHADOW_FADE_BUFFER_H_
 #include "main.h"
 
-typedef struct button_t {
-	const char* text;
-	const char* info;
-	double x;
-	double y;
-	double time;
-	interp_t scale;
-	_Bool hover;
-	mintg_input_state_t state;
-} button_t;
+typedef struct fade_buffer_t {
+	mintg_image_t* front;
+	mintg_image_t* back;
+	interp_t alpha;
+} fade_buffer_t;
 
-void button_init(button_t* button);
-_Bool button_update(button_t* button, double time);
-void button_draw(button_t* button, double time);
+void fade_buffer_init(fade_buffer_t* buffer);
+void fade_buffer_update(fade_buffer_t* buffer);
+void fade_buffer_finish();
+void fade_buffer_draw(fade_buffer_t* buffer, double time);
+void fade_buffer_exit(fade_buffer_t* buffer);
 
 #endif

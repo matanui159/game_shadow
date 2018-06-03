@@ -20,7 +20,7 @@
 #include "res.h"
 #include "menu.h"
 
-#define WINDOW_SIZE 540
+#define WINDOW_SIZE 720
 #define GAME_CLOCK 0.02
 
 static scene_t g_scene = menu_scene;
@@ -50,22 +50,37 @@ int main(int argc, char* argv[]) {
 	res_init();
 
 	mintg_image_t* buffer = mintg_image_create(WINDOW_SIZE * 2, WINDOW_SIZE * 2, NULL);
-	_Bool key_f1 = 0;
+	mintg_input_state_t key_f1;
 	_Bool ssaa = 1;
 
 	mint_timer_t timer;
 	mint_timer_set(&timer, 0);
 	double time = 0;
 
+	int fps_count = 0;
+	mint_timer_t fps_timer;
+	mint_timer_set(&fps_timer, 0);
+	char fps_buffer[16] = "FPS: 0";
+
 	g_scene(SCENE_INIT, 0);
 	while (mintg_update()) {
+		if (mint_timer_get(&fps_timer) >= 1) {
+			snprintf(fps_buffer, sizeof(fps_buffer), "FPS: %i", fps_count);
+			fps_count = 0;
+			mint_timer_set(&fps_timer, 0);
+		}
+		++fps_count;
+
 		time += mint_timer_set(&timer, 0);
 		if (time >= GAME_CLOCK) {
 			g_scene(SCENE_UPDATE, GAME_CLOCK);
-			time = fmod(time, GAME_CLOCK);
+			time -= GAME_CLOCK;
+			if (time > GAME_CLOCK) {
+				time = GAME_CLOCK;
+			}
 		}
 
-		if (mintg_input_key_state(MINTG_INPUT_F1, &key_f1) == MINTG_INPUT_PRESSED) {
+		if (mintg_input_key(MINTG_INPUT_F1, &key_f1) == MINTG_INPUT_KEYDOWN_EVENT) {
 			ssaa = !ssaa;
 		}
 		if (ssaa) {
@@ -85,5 +100,11 @@ int main(int argc, char* argv[]) {
 			mintg_image_draw(buffer, NULL);
 			mintg_pop();
 		}
+
+		mintg_push();
+		mintg_translate(0, -200);
+		mintg_color(0.5, 0.5, 0.5, 1);
+		mintg_font_draw(res_font_menu_small, fps_buffer);
+		mintg_pop();
 	}
 }

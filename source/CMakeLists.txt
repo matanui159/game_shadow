@@ -19,6 +19,7 @@
 add_executable(shadow
 		"${CMAKE_CURRENT_SOURCE_DIR}/main.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/res.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/fade_buffer.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/player.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/shadow.c"
