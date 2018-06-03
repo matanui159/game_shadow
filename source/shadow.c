@@ -44,7 +44,7 @@ typedef struct rect_t {
 } rect_t;
 
 static mint_array_t* g_shadows = NULL;
-static fade_buffer_t fade_buffer;
+static mintg_image_t* buffer;
 
 static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
 	double rx = x - shadow->x.v;
@@ -63,6 +63,11 @@ void shadow_init() {
 		g_shadows = mint_array_create(sizeof(shadow_t));
 		mint_array_add(g_shadows, -1, 1);
 	}
+	if (buffer == NULL) {
+		int width, height;
+		mintg_size(&width, &height);
+		buffer = mintg_image_create(width, height, NULL);
+	}
 
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		double angle = mint_random(0, M_PI * 2);
@@ -75,11 +80,11 @@ void shadow_init() {
 		shadow->ty = shadow->y.v;
 		shadow->state = SHADOW_INIT;
 	}
-	fade_buffer_init(&fade_buffer);
+	fade_buffer_init(buffer);
 }
 
 void shadow_update(double time) {
-	fade_buffer_update(&fade_buffer);
+	fade_buffer_update(buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 		interp_update(&shadow->x);
@@ -152,13 +157,9 @@ void shadow_update(double time) {
 			mintg_pop();
 		}
 	}
-	fade_buffer_finish();
+	mintg_image_target(NULL);
 }
 
-void shadow_draw(double time) {
-	fade_buffer_draw(&fade_buffer, time);
-}
-
-void shadow_exit() {
-	fade_buffer_exit(&fade_buffer);
+void shadow_draw() {
+	mintg_image_draw(buffer, NULL);
 }

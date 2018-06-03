@@ -42,7 +42,7 @@ void game_scene(scene_state_t state, double time) {
 		mintg_clear();
 
 		player_draw(res_image_heart, 1, time);
-		shadow_draw(time);
+		shadow_draw();
 
 		int width, height;
 		double alpha = interp_value(&fade, time);
@@ -52,10 +52,6 @@ void game_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
-
-	} else if (state == SCENE_EXIT) {
-
-		shadow_exit();
 
 	}
 }

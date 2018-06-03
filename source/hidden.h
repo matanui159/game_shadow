@@ -1,5 +1,5 @@
 /*
- * fade_buffer.h
+ * hidden.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,11 +16,13 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_FADE_BUFFER_H_
-#define SHADOW_FADE_BUFFER_H_
+#ifndef SHADOW_HIDDEN_H_
+#define SHADOW_HIDDEN_H_
 #include "main.h"
+#include <GLES2/gl2.h>
 
-void fade_buffer_init(mintg_image_t* buffer);
-void fade_buffer_update(mintg_image_t* buffer);
+void mintg__draw_flush();
+extern void (GL_APIENTRY* mint__lib_glBlendFunc)(GLenum, GLenum);
+extern void (GL_APIENTRY* mint__lib_glBlendEquation)(GLenum);
 
 #endif

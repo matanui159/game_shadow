@@ -22,7 +22,6 @@
 
 void shadow_init();
 void shadow_update(double time);
-void shadow_draw(double time);
-void shadow_exit();
+void shadow_draw();
 
 #endif

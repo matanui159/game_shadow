@@ -18,41 +18,27 @@
  
 #include "fade_buffer.h"
 #include "res.h"
+#include "hidden.h"
 
-void fade_buffer_init(fade_buffer_t* buffer) {
+void fade_buffer_init(mintg_image_t* buffer) {
+	mintg_image_target(buffer);
+	mintg_color(0, 0, 0, 0);
+	mintg_clear();
+	mintg_image_target(NULL);
+}
+
+void fade_buffer_update(mintg_image_t* buffer) {
 	int width, height;
 	mintg_size(&width, &height);
-	buffer->front = mintg_image_create(width, height, NULL);
-	buffer->back = mintg_image_create(width, height, NULL);
-	buffer->alpha.old = 1;
-	buffer->alpha.v = 0.9;
-	mintg_image_target(buffer->front);
-	mintg_color(0, 0, 0, 0);
-	mintg_clear();
-	mintg_image_target(NULL);
-}
-
-void fade_buffer_update(fade_buffer_t* buffer) {
-	mintg_image_t* tmp = buffer->front;
-	buffer->front = buffer->back;
-	buffer->back = tmp;
-	mintg_image_target(buffer->front);
-	mintg_color(0, 0, 0, 0);
-	mintg_clear();
-	mintg_color(1, 1, 1, 0.9);
-	mintg_image_draw(buffer->back, NULL);
-}
-
-void fade_buffer_finish() {
-	mintg_image_target(NULL);
-}
-
-void fade_buffer_draw(fade_buffer_t* buffer, double time) {
-	mintg_color(1, 1, 1, interp_value(&buffer->alpha, time));
-	mintg_image_draw(buffer->front, NULL);
-}
-
-void fade_buffer_exit(fade_buffer_t* buffer) {
-	mintg_image_destroy(buffer->front);
-	mintg_image_destroy(buffer->back);
+	mintg_image_target(buffer);
+	mint__lib_glBlendFunc(GL_ONE, GL_ONE);
+	mint__lib_glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+	mintg_push();
+	mintg_scale(width, height);
+	mintg_color(0, 0, 0, 0.05);
+	mintg_image_draw(res_image_rect, NULL);
+	mintg_pop();
+	mintg__draw_flush();
+	mint__lib_glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	mint__lib_glBlendEquation(GL_FUNC_ADD);
 }
