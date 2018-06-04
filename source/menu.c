@@ -15,6 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/*
+ * NON DEMO TEXT:
+ * Choose your difficulty
+ * NORMAL
+ * Handle it yourself
+ */
  
 #include "menu.h"
 #include "res.h"
@@ -26,7 +33,7 @@ void menu_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static _Bool exit;
 
-	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
+	static button_t btn_normal = {"PLAY", "", 0, 0};
 	static button_t btn_easy = {"EASY", "Get help", 0, -100};
 
 	if (state == SCENE_INIT) {
@@ -63,7 +70,7 @@ void menu_scene(scene_state_t state, double time) {
 		mintg_push();
 		mintg_translate(0, 200);
 		mintg_color(1, 1, 1, 1);
-		mintg_font_draw(res_font_menu_large, "Choose your difficulty");
+		mintg_font_draw(res_font_menu_large, "DEMO");
 		mintg_pop();
 
 		button_draw(&btn_normal, time);

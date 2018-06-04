@@ -62,7 +62,7 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		mint_array_add(g_shadows, -1, 512);
+		mint_array_add(g_shadows, -1, 1);
 	}
 	if (buffer == NULL) {
 		int width, height;
@@ -104,15 +104,15 @@ void shadow_update(double time) {
 		shadow->x += shadow->vx * time;
 		shadow->y += shadow->vy * time;
 
+		double px, py;
+		player_pos(&px, &py);
 		if (dist < 32) {
-			double px, py;
-			player_pos(&px, &py);
 			switch (shadow->state) {
 				case SHADOW_ATTACK:;
-//					shadow_t *child = mint_array_add(g_shadows, -1, 1);
-//					shadow = mint_array_get(g_shadows, i);
-//					*child = *shadow;
-//					child->state = SHADOW_INIT;
+					shadow_t *child = mint_array_add(g_shadows, -1, 1);
+					shadow = mint_array_get(g_shadows, i);
+					*child = *shadow;
+					child->state = SHADOW_INIT;
 
 				case SHADOW_INIT:;
 					double angle = mint_random(0, M_PI * 2);
