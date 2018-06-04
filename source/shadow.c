@@ -88,6 +88,8 @@ void shadow_init() {
 
 _Bool shadow_update(double time) {
 	_Bool result = 0;
+	int width, height;
+	mintg_size(&width, &height);
 	fade_buffer_update(g_buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
@@ -117,9 +119,8 @@ _Bool shadow_update(double time) {
 					child->state = SHADOW_INIT;
 
 				case SHADOW_INIT:;
-					double angle = mint_random(0, M_PI * 2);
-					shadow->tx = px + cos(angle) * 100;
-					shadow->ty = py + sin(angle) * 100;
+					shadow->tx = mint_random(-width / 2.0, width / 2.0);
+					shadow->ty = mint_random(-height / 2.0, height / 2.0);
 					shadow->state = SHADOW_MOVE;
 					break;
 
