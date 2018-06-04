@@ -49,7 +49,7 @@ void player_update(double time) {
 	g_player.time += time;
 	double s0 = cos(g_player.time * 20 + M_PI);
 	double s1 = cos(g_player.time * 10);
-	g_player.scale.v = (s0 + 1) * (s1 + 1) / 30 + 0.9;
+	g_player.scale.v = (s0 + 1) * (s1 + 1) / 15 + 0.8;
 }
 
 void player_draw(mintg_image_t* image, _Bool beat, double time) {
