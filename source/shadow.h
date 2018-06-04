@@ -21,7 +21,7 @@
 #include "main.h"
 
 void shadow_init();
-void shadow_update(double time);
+_Bool shadow_update(double time);
 void shadow_draw();
 
 #endif

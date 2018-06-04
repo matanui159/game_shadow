@@ -20,21 +20,37 @@
 #include "res.h"
 #include "player.h"
 #include "shadow.h"
+#include "menu.h"
 
 void game_scene(scene_state_t state, double time) {
 	static interp_t fade;
+	static _Bool exit;
 
 	if (state == SCENE_INIT) {
 
 		interp_init(&fade, 1);
+		exit = 0;
 		shadow_init();
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		fade.v -= time;
-		player_update(time);
-		shadow_update(time);
+		if (!exit) {
+			player_update(time);
+			if (shadow_update(time)) {
+				interp_init(&fade, 0);
+				exit = 1;
+			}
+		}
+
+		if (exit) {
+			if (fade.v >= 1) {
+				scene_set(menu_scene);
+			}
+			fade.v += time;
+		} else {
+			fade.v -= time;
+		}
 
 	} else if (state == SCENE_DRAW) {
 
