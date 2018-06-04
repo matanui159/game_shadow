@@ -28,12 +28,13 @@ typedef enum shadow_state_t {
 } shadow_state_t;
 
 typedef struct shadow_t {
-	interp_t x;
-	interp_t y;
+	double x;
+	double y;
 	double vx;
 	double vy;
 	double tx;
 	double ty;
+	double time;
 	shadow_state_t state;
 } shadow_t;
 
@@ -47,8 +48,8 @@ static mint_array_t* g_shadows = NULL;
 static mintg_image_t* buffer;
 
 static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
-	double rx = x - shadow->x.v;
-	double ry = y - shadow->y.v;
+	double rx = x - shadow->x;
+	double ry = y - shadow->y;
 	if (dx != NULL) {
 		*dx = rx;
 	}
@@ -72,12 +73,13 @@ void shadow_init() {
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		double angle = mint_random(0, M_PI * 2);
 		shadow_t* shadow = mint_array_get(g_shadows, i);
-		interp_init(&shadow->x, cos(angle) * 600);
-		interp_init(&shadow->y, sin(angle) * 600);
+		shadow->x = cos(angle) * 500;
+		shadow->y = sin(angle) * 500;
 		shadow->vx = 0;
 		shadow->vy = 0;
-		shadow->tx = shadow->x.v;
-		shadow->ty = shadow->y.v;
+		shadow->tx = shadow->x;
+		shadow->ty = shadow->y;
+		shadow->time = 0;
 		shadow->state = SHADOW_INIT;
 	}
 	fade_buffer_init(buffer);
@@ -87,45 +89,30 @@ void shadow_update(double time) {
 	fade_buffer_update(buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
-		interp_update(&shadow->x);
-		interp_update(&shadow->y);
 
 		double dx, dy;
 		double dist = shadow_dist(shadow, shadow->tx, shadow->ty, &dx, &dy);
 		if (dist == 0) {
 			dist = 1;
 		}
-		double accel = time * 300 / dist;
 
-		shadow->vx += dx * accel;
-		if (shadow->vx > 300) {
-			shadow->vx = 300;
-		}
-		shadow->vy += dy * accel;
-		if (shadow->vy > 300) {
-			shadow->vy = 300;
-		}
-
-		shadow->vx *= pow(0.3, time);
-		shadow->vy *= pow(0.3, time);
-		shadow->x.v += shadow->vx * time;
-		shadow->y.v += shadow->vy * time;
+		const double vel = 300;
+		double vx = dx / dist * vel;
+		double vy = dy / dist * vel;
+		shadow->vx = pow(0.3, time) * (shadow->vx - vx) + vx;
+		shadow->vy = pow(0.3, time) * (shadow->vy - vy) + vy;
+		shadow->x += shadow->vx * time;
+		shadow->y += shadow->vy * time;
 
 		if (dist < 32) {
 			double px, py;
 			player_pos(&px, &py);
 			switch (shadow->state) {
 				case SHADOW_ATTACK:;
-						shadow_t *child = mint_array_add(g_shadows, -1, 1);
-						shadow = mint_array_get(g_shadows, i);
-						interp_init(&child->x, shadow->x.v);
-						interp_init(&child->y, shadow->y.v);
-						child->vx = shadow->vx;
-						child->vy = shadow->vx;
-						child->tx = child->x.v;
-						child->ty = child->y.v;
-						child->state = SHADOW_INIT;
-						printf("Count: %i\n", mint_array_size(g_shadows));
+					shadow_t *child = mint_array_add(g_shadows, -1, 1);
+					shadow = mint_array_get(g_shadows, i);
+					*child = *shadow;
+					child->state = SHADOW_INIT;
 
 				case SHADOW_INIT:;
 					double angle = mint_random(0, M_PI * 2);
@@ -135,26 +122,29 @@ void shadow_update(double time) {
 					break;
 
 				case SHADOW_MOVE:
-					shadow->tx = px * 2 - shadow->x.v;
-					shadow->ty = py * 2 - shadow->y.v;
+					shadow->tx = px * 2 - shadow->x;
+					shadow->ty = py * 2 - shadow->y;
 					shadow->state = SHADOW_ATTACK;
 					break;
 			}
 		}
 
-		const int rect_count = 10;
-		for (int j = 0; j < rect_count; ++j) {
-			double interp = time / rect_count * j;
+		const double shadow_clock = 0.001;
+		shadow->time += time;
+		while (shadow->time > shadow_clock) {
 			double angle = mint_random(0, M_PI * 2);
-			dist = mint_random(0, 16);
-			double x = interp_value(&shadow->x, interp) + cos(angle) * dist;
-			double y = interp_value(&shadow->y, interp) + sin(angle) * dist;
+			double offset = mint_random(0, 16);
 			mintg_push();
-			mintg_translate(x, y);
+			mintg_translate(
+					shadow->x + cos(angle) * offset,
+					shadow->y + sin(angle) * offset
+			);
+			mintg_rotate(mint_random(0, M_PI * 2));
 			mintg_scale(8, 8);
-			mintg_color(0, 0, 0, 1);
+			mintg_color(0, 0, 0, 0.5);
 			mintg_image_draw(res_image_rect, NULL);
 			mintg_pop();
+			shadow->time -= shadow_clock;
 		}
 	}
 	mintg_image_target(NULL);

@@ -20,7 +20,6 @@
 #include "res.h"
 #include "menu.h"
 
-#define WINDOW_SIZE 720
 #define GAME_CLOCK 0.02
 
 static scene_t g_scene = menu_scene;
@@ -45,11 +44,12 @@ void scene_set(scene_t scene) {
 }
 
 int main(int argc, char* argv[]) {
-	mintg_init("KAGE", WINDOW_SIZE, WINDOW_SIZE);
+	const int window_size = 720;
+	mintg_init("KAGE", window_size, window_size);
 	mintg_input_hide(1);
 	res_init();
 
-	mintg_image_t* buffer = mintg_image_create(WINDOW_SIZE * 2, WINDOW_SIZE * 2, NULL);
+	mintg_image_t* buffer = mintg_image_create(window_size * 2, window_size * 2, NULL);
 	mintg_input_state_t key_f1;
 	_Bool ssaa = 1;
 
