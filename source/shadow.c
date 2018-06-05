@@ -62,7 +62,7 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		mint_array_add(g_shadows, -1, 1);
+		mint_array_add(g_shadows, -1, 1024);
 	}
 	if (g_buffer == NULL) {
 		int width, height;
@@ -75,6 +75,8 @@ void shadow_init() {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 		shadow->x = cos(angle) * 500;
 		shadow->y = sin(angle) * 500;
+//		shadow->x = -400;
+//		shadow->y = -400;
 		shadow->vx = 0;
 		shadow->vy = 0;
 		shadow->tx = shadow->x;
