@@ -1,5 +1,5 @@
 /*
- * player.h
+ * light.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,12 +16,14 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_PLAYER_H_
-#define SHADOW_PLAYER_H_
+#ifndef SHADOW_LIGHT_H_
+#define SHADOW_LIGHT_H_
 #include "main.h"
 
-void player_update(double time);
-void player_draw(_Bool game, double time);
-void player_pos(double* x, double* y);
+void light_init();
+void light_update(double time);
+void light_draw(double time);
+void light_pos(double* x, double* y);
+double light_radius();
 
 #endif

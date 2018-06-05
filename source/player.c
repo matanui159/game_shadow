@@ -17,18 +17,21 @@
  */
  
 #include "player.h"
+#include "res.h"
 
 static struct {
 	double time;
 	interp_t x;
 	interp_t y;
 	interp_t scale;
+	interp_t shield;
 } g_player;
 
 void player_update(double time) {
 	interp_update(&g_player.x);
 	interp_update(&g_player.y);
 	interp_update(&g_player.scale);
+	interp_update(&g_player.shield);
 	mintg_input_cursor(&g_player.x.v, &g_player.y.v);
 
 	int width, height;
@@ -50,11 +53,24 @@ void player_update(double time) {
 	double s0 = cos(g_player.time * 20 + M_PI);
 	double s1 = cos(g_player.time * 10);
 	g_player.scale.v = (s0 + 1) * (s1 + 1) / 15 + 0.8;
+
+	double vx = g_player.x.v - g_player.x.old;
+	double vy = g_player.y.v - g_player.y.old;
+	if (vx != 0 || vy != 0) {
+		double angle = atan2(vy, vx);
+		while (angle - g_player.shield.v < -M_PI) {
+			angle += M_PI * 2;
+		}
+		while (angle - g_player.shield.v > M_PI) {
+			angle -= M_PI * 2;
+		}
+		g_player.shield.v = pow(0.05, time) * (g_player.shield.v - angle) + angle;
+	}
 }
 
-void player_draw(mintg_image_t* image, _Bool beat, double time) {
+void player_draw(_Bool game, double time) {
 	double scale = interp_value(&g_player.scale, time);
-	if (!beat) {
+	if (!game) {
 		scale = 1;
 	}
 
@@ -62,7 +78,18 @@ void player_draw(mintg_image_t* image, _Bool beat, double time) {
 	mintg_translate(interp_value(&g_player.x, time), interp_value(&g_player.y, time));
 	mintg_scale(scale, scale);
 	mintg_color(0.6, 0, 0.2, 1);
-	mintg_image_draw(image, NULL);
+	if (game) {
+		mintg_image_draw(res_image_heart, NULL);
+		mintg_push();
+		mintg_rotate(interp_value(&g_player.shield, time));
+		mintg_translate(-32, 0);
+		mintg_scale(4, 32);
+		mintg_color(0.5, 0.5, 0.5, 1);
+		mintg_image_draw(res_image_rect, NULL);
+		mintg_pop();
+	} else {
+		mintg_image_draw(res_image_arrow, NULL);
+	}
 	mintg_pop();
 }
 

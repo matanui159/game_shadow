@@ -45,19 +45,7 @@ typedef struct rect_t {
 } rect_t;
 
 static mint_array_t* g_shadows = NULL;
-static mintg_image_t* g_buffer;
-
-static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
-	double rx = x - shadow->x;
-	double ry = y - shadow->y;
-	if (dx != NULL) {
-		*dx = rx;
-	}
-	if (dy != NULL) {
-		*dy = ry;
-	}
-	return sqrt(rx * rx + ry * ry);
-}
+static mintg_image_t* g_buffer = NULL;
 
 void shadow_init() {
 	if (g_shadows == NULL) {
@@ -96,7 +84,7 @@ _Bool shadow_update(double time) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 
 		double dx, dy;
-		double dist = shadow_dist(shadow, shadow->tx, shadow->ty, &dx, &dy);
+		double dist = pos_dist(shadow->x, shadow->y, shadow->tx, shadow->ty, &dx, &dy);
 		if (dist == 0) {
 			dist = 1;
 		}
@@ -110,7 +98,7 @@ _Bool shadow_update(double time) {
 
 		double px, py;
 		player_pos(&px, &py);
-		if (dist < 32) {
+		if (dist < 24) {
 			switch (shadow->state) {
 				case SHADOW_ATTACK:;
 					shadow_t *child = mint_array_add(g_shadows, -1, 1);
@@ -132,7 +120,7 @@ _Bool shadow_update(double time) {
 			}
 		}
 
-		if (shadow_dist(shadow, px, py, NULL, NULL) < 24) {
+		if (pos_dist(shadow->x, shadow->y, px, py, NULL, NULL) < 24) {
 			result = 1;
 		}
 

@@ -21,10 +21,10 @@
 #include "main.h"
 
 extern mintg_image_t* res_image_rect;
-extern mintg_image_t* res_image_ellipse;
-
 extern mintg_image_t* res_image_arrow;
 extern mintg_image_t* res_image_heart;
+extern mintg_image_t* res_image_light;
+extern mintg_image_t* res_image_wave;
 
 extern mintg_font_t* res_font_menu;
 extern mintg_font_t* res_font_menu_large;

@@ -23,6 +23,7 @@ add_executable(shadow
 		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/player.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/shadow.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/light.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
 )

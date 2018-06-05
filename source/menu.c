@@ -69,7 +69,7 @@ void menu_scene(scene_state_t state, double time) {
 		button_draw(&btn_normal, time);
 //		button_draw(&btn_easy, time);
 
-		player_draw(res_image_arrow, 0, time);
+		player_draw(0, time);
 
 		int width, height;
 		double alpha = interp_value(&fade, time);

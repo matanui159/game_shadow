@@ -20,6 +20,7 @@
 #include "res.h"
 #include "player.h"
 #include "shadow.h"
+#include "light.h"
 #include "menu.h"
 
 void game_scene(scene_state_t state, double time) {
@@ -31,6 +32,7 @@ void game_scene(scene_state_t state, double time) {
 		interp_init(&fade, 1);
 		exit = 0;
 		shadow_init();
+//		light_init();
 
 	} else if (state == SCENE_UPDATE) {
 
@@ -42,6 +44,7 @@ void game_scene(scene_state_t state, double time) {
 				exit = 1;
 			}
 		}
+//		light_update(time);
 
 		if (exit) {
 			if (fade.v >= 1) {
@@ -57,8 +60,9 @@ void game_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-		player_draw(res_image_heart, 1, time);
+		player_draw(1, time);
 		shadow_draw();
+//		light_draw(time);
 
 		int width, height;
 		double alpha = interp_value(&fade, time);

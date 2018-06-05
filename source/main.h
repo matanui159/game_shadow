@@ -38,5 +38,6 @@ void interp_init(interp_t* interp, double value);
 void interp_update(interp_t* interp);
 double interp_value(interp_t* interp, double time);
 void scene_set(scene_t scene);
+double pos_dist(double x0, double y0, double x1, double y1, double* dx, double* dy);
 
 #endif

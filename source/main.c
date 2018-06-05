@@ -43,6 +43,18 @@ void scene_set(scene_t scene) {
 	g_scene(SCENE_INIT, 0);
 }
 
+double pos_dist(double x0, double y0, double x1, double y1, double* dx, double* dy) {
+	double rx = x1 - x0;
+	double ry = y1 - y0;
+	if (dx != NULL) {
+		*dx = rx;
+	}
+	if (dy != NULL) {
+		*dy = ry;
+	}
+	return sqrt(rx * rx + ry * ry);
+}
+
 int main(int argc, char* argv[]) {
 	const int window_size = 720;
 	mintg_init("Kage", window_size, window_size);
