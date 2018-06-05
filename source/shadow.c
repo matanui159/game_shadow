@@ -70,7 +70,6 @@ void shadow_init() {
 		g_buffer = mintg_image_create(width, height, NULL);
 	}
 
-	mint_array_remove(g_shadows, 1, -1); // THIS IS FOR THE DEMO
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		double angle = mint_random(0, M_PI * 2);
 		shadow_t* shadow = mint_array_get(g_shadows, i);

@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-// game title: KAGE
-
 #include "main.h"
 #include "res.h"
 #include "menu.h"
@@ -47,7 +45,7 @@ void scene_set(scene_t scene) {
 
 int main(int argc, char* argv[]) {
 	const int window_size = 720;
-	mintg_init("Demo", window_size, window_size);
+	mintg_init("Kage", window_size, window_size);
 	mintg_input_hide(1);
 	res_init();
 
