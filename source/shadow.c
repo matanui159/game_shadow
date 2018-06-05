@@ -62,7 +62,7 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		mint_array_add(g_shadows, -1, 1024);
+		mint_array_add(g_shadows, -1, 1);
 	}
 	if (g_buffer == NULL) {
 		int width, height;
@@ -71,12 +71,12 @@ void shadow_init() {
 	}
 
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
-		double angle = mint_random(0, M_PI * 2);
+//		double angle = mint_random(0, M_PI * 2);
 		shadow_t* shadow = mint_array_get(g_shadows, i);
-		shadow->x = cos(angle) * 500;
-		shadow->y = sin(angle) * 500;
-//		shadow->x = -400;
-//		shadow->y = -400;
+//		shadow->x = cos(angle) * 500;
+//		shadow->y = sin(angle) * 500;
+		shadow->x = -400;
+		shadow->y = -400;
 		shadow->vx = 0;
 		shadow->vy = 0;
 		shadow->tx = shadow->x;
@@ -101,9 +101,8 @@ _Bool shadow_update(double time) {
 			dist = 1;
 		}
 
-		const double vel = 300;
-		double vx = dx / dist * vel;
-		double vy = dy / dist * vel;
+		double vx = dx / dist * 300;
+		double vy = dy / dist * 300;
 		shadow->vx = pow(0.3, time) * (shadow->vx - vx) + vx;
 		shadow->vy = pow(0.3, time) * (shadow->vy - vy) + vy;
 		shadow->x += shadow->vx * time;
