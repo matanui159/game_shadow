@@ -18,11 +18,11 @@
 
 #include "main.h"
 #include "res.h"
-#include "menu.h"
+#include "tutorial.h"
 
 #define GAME_CLOCK 0.02
 
-static scene_t g_scene = menu_scene;
+static scene_t g_scene = tutorial_scene;
 
 void interp_init(interp_t* interp, double value) {
 	interp->v = value;
@@ -57,20 +57,8 @@ int main(int argc, char* argv[]) {
 	mint_timer_set(&timer, 0);
 	double time = 0;
 
-	int fps_count = 0;
-	mint_timer_t fps_timer;
-	mint_timer_set(&fps_timer, 0);
-	char fps_buffer[16] = "FPS: 0";
-
 	g_scene(SCENE_INIT, 0);
 	while (mintg_update()) {
-		if (mint_timer_get(&fps_timer) >= 1) {
-			snprintf(fps_buffer, sizeof(fps_buffer), "FPS: %i", fps_count);
-			fps_count = 0;
-			mint_timer_set(&fps_timer, 0);
-		}
-		++fps_count;
-
 		time += mint_timer_set(&timer, 0);
 		if (time >= GAME_CLOCK) {
 			g_scene(SCENE_UPDATE, GAME_CLOCK);
@@ -100,11 +88,5 @@ int main(int argc, char* argv[]) {
 			mintg_image_draw(buffer, NULL);
 			mintg_pop();
 		}
-
-		mintg_push();
-		mintg_translate(0, -200);
-		mintg_color(0.5, 0.5, 0.5, 1);
-		mintg_font_draw(res_font_menu_small, fps_buffer);
-		mintg_pop();
 	}
 }

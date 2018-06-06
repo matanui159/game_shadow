@@ -1,5 +1,5 @@
 /*
- * menu.c
+ * tutorial.c
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,42 +16,36 @@
  * limitations under the License.
  */
  
-#include "menu.h"
+#include "tutorial.h"
 #include "res.h"
-#include "button.h"
 #include "player.h"
-#include "game.h"
+#include "menu.h"
 
-void menu_scene(scene_state_t state, double time) {
+void tutorial_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static _Bool exit;
-
-	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
-	static button_t btn_easy = {"EASY", "Get help", 0, -100};
+	static mintg_input_state_t rbutton;
 
 	if (state == SCENE_INIT) {
 
 		interp_init(&fade, 1);
 		exit = 0;
-		button_init(&btn_normal);
-		button_init(&btn_easy);
 		player_init();
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
 		player_update(time);
-		if (button_update(&btn_normal, time) && !exit) {\
-			if (fade.v < 0) {
-				interp_init(&fade, 0);
+		if (!exit && mintg_input_key(MINTG_INPUT_RBUTTON, &rbutton) == MINTG_INPUT_KEYUP_EVENT) {
+			if (fade.v < -1) {
+				interp_init(&fade, -1);
 			}
 			exit = 1;
 		}
-		button_update(&btn_easy, time);
 
 		if (exit) {
 			if (fade.v >= 1) {
-				scene_set(game_scene);
+				scene_set(menu_scene);
 			}
 			fade.v += time;
 		} else {
@@ -60,17 +54,16 @@ void menu_scene(scene_state_t state, double time) {
 
 	} else if (state == SCENE_DRAW) {
 
-		mintg_color(0, 0, 0, 1);
+		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-		mintg_push();
-		mintg_translate(0, 200);
-		mintg_color(1, 1, 1, 1);
-		mintg_font_draw(res_font_menu_large, "Choose your difficulty");
-		mintg_pop();
+		mintg_color(0, 0, 0, 1);
+		mintg_image_draw(res_image_rbutton, NULL);
 
-		button_draw(&btn_normal, time);
-//		button_draw(&btn_easy, time);
+		mintg_push();
+		mintg_translate(0, -50);
+		mintg_font_draw(res_font_menu, "HOLD");
+		mintg_pop();
 
 		player_draw(0, time);
 

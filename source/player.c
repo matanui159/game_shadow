@@ -40,12 +40,12 @@ void player_init() {
 	}
 }
 
-static void player_update1(player_t* player, double time, _Bool control) {
+static void player_update1(player_t* player, double time, _Bool active) {
 	if (player->alive) {
 		interp_update(&player->x);
 		interp_update(&player->y);
 		interp_update(&player->scale);
-		if (control) {
+		if (active) {
 			mintg_input_cursor(&player->x.v, &player->y.v);
 		}
 
@@ -72,10 +72,6 @@ static void player_update1(player_t* player, double time, _Bool control) {
 }
 
 void player_update(double time) {
-	if (!g_init) {
-
-	}
-
 	mintg_input_key(MINTG_INPUT_RBUTTON, &g_state);
 	switch (g_state) {
 		case MINTG_INPUT_KEYUP_EVENT:
@@ -113,4 +109,12 @@ void player_draw1(player_t* player, _Bool game, double time, double red, double 
 void player_draw(_Bool game, double time) {
 	player_draw1(&player_qld, game, time, 0.6, 0.2);
 	player_draw1(&player_nsw, game, time, 0.2, 0.6);
+}
+
+player_t* player_active() {
+	if (g_state == MINTG_INPUT_KEYUP || g_state == MINTG_INPUT_KEYUP_EVENT) {
+		return &player_qld;
+	} else {
+		return &player_nsw;
+	}
 }

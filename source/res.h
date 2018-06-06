@@ -23,6 +23,7 @@
 extern mintg_image_t* res_image_rect;
 extern mintg_image_t* res_image_arrow;
 extern mintg_image_t* res_image_heart;
+extern mintg_image_t* res_image_rbutton;
 
 extern mintg_font_t* res_font_menu;
 extern mintg_font_t* res_font_menu_large;

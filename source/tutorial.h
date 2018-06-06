@@ -1,5 +1,5 @@
 /*
- * player.h
+ * tutorial.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,24 +16,10 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_PLAYER_H_
-#define SHADOW_PLAYER_H_
+#ifndef SHADOW_TUTORIAL_H_
+#define SHADOW_TUTORIAL_H_
 #include "main.h"
 
-typedef struct {
-	_Bool alive;
-	double time;
-	interp_t x;
-	interp_t y;
-	interp_t scale;
-} player_t;
-
-extern player_t player_qld;
-extern player_t player_nsw;
-
-void player_init();
-void player_update(double time);
-void player_draw(_Bool game, double time);
-player_t* player_active();
+void tutorial_scene(scene_state_t state, double time);
 
 #endif
