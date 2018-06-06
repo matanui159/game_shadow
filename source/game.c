@@ -39,7 +39,7 @@ void game_scene(scene_state_t state, double time) {
 		interp_update(&fade);
 		if (!exit) {
 			player_update(time);
-			if (shadow_update(time)) {
+			if (shadow_update(time) != NULL) {
 				interp_init(&fade, 0);
 				exit = 1;
 			}

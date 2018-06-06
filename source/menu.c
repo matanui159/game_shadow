@@ -35,6 +35,7 @@ void menu_scene(scene_state_t state, double time) {
 		exit = 0;
 		button_init(&btn_normal);
 		button_init(&btn_easy);
+		player_init();
 
 	} else if (state == SCENE_UPDATE) {
 

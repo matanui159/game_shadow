@@ -21,8 +21,6 @@
 mintg_image_t* res_image_rect;
 mintg_image_t* res_image_arrow;
 mintg_image_t* res_image_heart;
-mintg_image_t* res_image_light;
-mintg_image_t* res_image_wave;
 
 mintg_font_t* res_font_menu;
 mintg_font_t* res_font_menu_large;
@@ -33,8 +31,6 @@ void res_init() {
 	res_image_rect = mintg_image_create(1, 1, box_data);
 	res_image_arrow = mintg_image_load("res/arrow.png", MINT_FILE_LOCAL);
 	res_image_heart = mintg_image_load("res/heart.png", MINT_FILE_LOCAL);
-	res_image_light = mintg_image_load("res/star.png", MINT_FILE_LOCAL);
-	res_image_wave = mintg_image_load("res/wave.png", MINT_FILE_LOCAL);
 
 	res_font_menu = mintg_font_load("res/menu.ttf", MINT_FILE_LOCAL, 30);
 	res_font_menu_large = mintg_font_load("res/menu.ttf", MINT_FILE_LOCAL, 40);

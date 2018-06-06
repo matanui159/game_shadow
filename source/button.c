@@ -35,10 +35,8 @@ _Bool button_update(button_t* button, double time) {
 	double x = button->x - width / 2.0;
 	double y = button->y - height / 2.0;
 
-	double px, py;
-	player_pos(&px, &py);
 	mintg_input_key(MINTG_INPUT_LBUTTON, &button->state);
-	if (px > x && px < x + width && py > y && py < y + height) {
+	if (player_qld.x.v > x && player_qld.x.v < x + width && player_qld.y.v > y && player_qld.y.v < y + height) {
 		button->hover = 1;
 		if (button->state == MINTG_INPUT_KEYUP || button->state == MINTG_INPUT_KEYUP_EVENT) {
 			interp_init(&button->scale, 1);

@@ -19,7 +19,6 @@
 #include "shadow.h"
 #include "res.h"
 #include "fade_buffer.h"
-#include "player.h"
 
 typedef enum shadow_state_t {
 	SHADOW_INIT,
@@ -47,10 +46,21 @@ typedef struct rect_t {
 static mint_array_t* g_shadows = NULL;
 static mintg_image_t* g_buffer = NULL;
 
+static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
+	double rx = x - shadow->x;
+	double ry = y - shadow->y;
+	if (dx != NULL) {
+		*dx = rx;
+	}
+	if (dy != NULL) {
+		*dy = ry;
+	}
+	return sqrt(rx * rx + ry * ry);
+}
+
 void shadow_init() {
 	if (g_shadows == NULL) {
 		g_shadows = mint_array_create(sizeof(shadow_t));
-		mint_array_add(g_shadows, -1, 1);
 	}
 	if (g_buffer == NULL) {
 		int width, height;
@@ -58,25 +68,20 @@ void shadow_init() {
 		g_buffer = mintg_image_create(width, height, NULL);
 	}
 
-	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
-//		double angle = mint_random(0, M_PI * 2);
-		shadow_t* shadow = mint_array_get(g_shadows, i);
-//		shadow->x = cos(angle) * 500;
-//		shadow->y = sin(angle) * 500;
-		shadow->x = -400;
-		shadow->y = -400;
-		shadow->vx = 0;
-		shadow->vy = 0;
-		shadow->tx = shadow->x;
-		shadow->ty = shadow->y;
-		shadow->time = 0;
-		shadow->state = SHADOW_INIT;
-	}
+	shadow_t* shadow = mint_array_replace(g_shadows, 0, -1, 1);
+	shadow->x = -400;
+	shadow->y = -400;
+	shadow->vx = 0;
+	shadow->vy = 0;
+	shadow->tx = shadow->x;
+	shadow->ty = shadow->y;
+	shadow->time = 0;
+	shadow->state = SHADOW_INIT;
 	fade_buffer_init(g_buffer);
 }
 
-_Bool shadow_update(double time) {
-	_Bool result = 0;
+player_t* shadow_update(double time) {
+	player_t* result = NULL;
 	int width, height;
 	mintg_size(&width, &height);
 	fade_buffer_update(g_buffer);
@@ -84,7 +89,7 @@ _Bool shadow_update(double time) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 
 		double dx, dy;
-		double dist = pos_dist(shadow->x, shadow->y, shadow->tx, shadow->ty, &dx, &dy);
+		double dist = shadow_dist(shadow, shadow->tx, shadow->ty, &dx, &dy);
 		if (dist == 0) {
 			dist = 1;
 		}
@@ -96,8 +101,9 @@ _Bool shadow_update(double time) {
 		shadow->x += shadow->vx * time;
 		shadow->y += shadow->vy * time;
 
-		double px, py;
-		player_pos(&px, &py);
+		double qld_dist = shadow_dist(shadow, player_qld.x.v, player_qld.y.v, NULL, NULL);
+		double nsw_dist = shadow_dist(shadow, player_nsw.x.v, player_nsw.y.v, NULL, NULL);
+
 		if (dist < 24) {
 			switch (shadow->state) {
 				case SHADOW_ATTACK:;
@@ -113,15 +119,23 @@ _Bool shadow_update(double time) {
 					break;
 
 				case SHADOW_MOVE:
-					shadow->tx = px * 2 - shadow->x;
-					shadow->ty = py * 2 - shadow->y;
+					if (qld_dist < nsw_dist) {
+						shadow->tx = player_qld.x.v * 2 - shadow->x;
+						shadow->ty = player_qld.y.v * 2 - shadow->y;
+					} else {
+						shadow->tx = player_nsw.x.v * 2 - shadow->x;
+						shadow->ty = player_nsw.y.v * 2 - shadow->y;
+					}
 					shadow->state = SHADOW_ATTACK;
 					break;
 			}
 		}
 
-		if (pos_dist(shadow->x, shadow->y, px, py, NULL, NULL) < 24) {
-			result = 1;
+		if (result == NULL && qld_dist < 24) {
+			result = &player_qld;
+		}
+		if (result == NULL && nsw_dist < 24) {
+			result = &player_nsw;
 		}
 
 		const double shadow_clock = 0.001;

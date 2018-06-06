@@ -19,9 +19,10 @@
 #ifndef SHADOW__H_
 #define SHADOW__H_
 #include "main.h"
+#include "player.h"
 
 void shadow_init();
-_Bool shadow_update(double time);
+player_t* shadow_update(double time);
 void shadow_draw();
 
 #endif
