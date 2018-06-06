@@ -22,7 +22,7 @@
 #include "player.h"
 
 void shadow_init();
-player_t* shadow_update(double time);
+void shadow_update(double time);
 void shadow_draw();
 
 #endif

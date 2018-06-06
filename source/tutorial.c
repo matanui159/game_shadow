@@ -67,11 +67,9 @@ void tutorial_scene(scene_state_t state, double time) {
 
 		player_draw(0, time);
 
-		int width, height;
 		double alpha = interp_value(&fade, time);
-		mintg_size(&width, &height);
 		mintg_push();
-		mintg_scale(width, height);
+		mintg_scale(mintg_width(), mintg_height());
 		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();

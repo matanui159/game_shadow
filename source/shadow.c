@@ -37,14 +37,9 @@ typedef struct shadow_t {
 	shadow_state_t state;
 } shadow_t;
 
-typedef struct rect_t {
-	double x;
-	double y;
-	interp_t alpha;
-} rect_t;
-
 static mint_array_t* g_shadows = NULL;
 static mintg_image_t* g_buffer = NULL;
+static _Bool g_kill;
 
 static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
 	double rx = x - shadow->x;
@@ -63,27 +58,24 @@ void shadow_init() {
 		g_shadows = mint_array_create(sizeof(shadow_t));
 	}
 	if (g_buffer == NULL) {
-		int width, height;
-		mintg_size(&width, &height);
-		g_buffer = mintg_image_create(width, height, NULL);
+		g_buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
 	}
 
 	shadow_t* shadow = mint_array_replace(g_shadows, 0, -1, 1);
-	shadow->x = -400;
-	shadow->y = -400;
+	shadow->x = -1000;
+	shadow->y = -1000;
 	shadow->vx = 0;
 	shadow->vy = 0;
 	shadow->tx = shadow->x;
 	shadow->ty = shadow->y;
 	shadow->time = 0;
 	shadow->state = SHADOW_INIT;
+
 	fade_buffer_init(g_buffer);
+	g_kill = 0;
 }
 
-player_t* shadow_update(double time) {
-	player_t* result = NULL;
-	int width, height;
-	mintg_size(&width, &height);
+void shadow_update(double time) {
 	fade_buffer_update(g_buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
@@ -113,8 +105,8 @@ player_t* shadow_update(double time) {
 					child->state = SHADOW_INIT;
 
 				case SHADOW_INIT:;
-					shadow->tx = mint_random(-width / 2.0, width / 2.0);
-					shadow->ty = mint_random(-height / 2.0, height / 2.0);
+					shadow->tx = mint_random(-mintg_width() / 2.0, mintg_width() / 2.0);
+					shadow->ty = mint_random(-mintg_height() / 2.0, mintg_height() / 2.0);
 					shadow->state = SHADOW_MOVE;
 					break;
 
@@ -131,11 +123,13 @@ player_t* shadow_update(double time) {
 			}
 		}
 
-		if (result == NULL && qld_dist < 24) {
-			result = &player_qld;
+		if (!g_kill && player_qld.health > 0 && qld_dist < 24) {
+			player_kill(&player_qld, time);
+			g_kill = 1;
 		}
-		if (result == NULL && nsw_dist < 24) {
-			result = &player_nsw;
+		if (!g_kill && player_nsw.health > 0 && nsw_dist < 24) {
+			player_kill(&player_nsw, time);
+			g_kill = 1;
 		}
 
 		const double shadow_clock = 0.001;
@@ -157,7 +151,6 @@ player_t* shadow_update(double time) {
 		}
 	}
 	mintg_image_target(NULL);
-	return result;
 }
 
 void shadow_draw() {

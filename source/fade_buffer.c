@@ -28,13 +28,11 @@ void fade_buffer_init(mintg_image_t* buffer) {
 }
 
 void fade_buffer_update(mintg_image_t* buffer) {
-	int width, height;
-	mintg_size(&width, &height);
 	mintg_image_target(buffer);
 	mint__lib_glBlendFunc(GL_ONE, GL_ONE);
 	mint__lib_glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
 	mintg_push();
-	mintg_scale(width, height);
+	mintg_scale(mintg_width(), mintg_height());
 	mintg_color(0.5, 0.5, 0.5, 0.05);
 	mintg_image_draw(res_image_rect, NULL);
 	mintg_pop();

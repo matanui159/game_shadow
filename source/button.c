@@ -29,9 +29,8 @@ _Bool button_update(button_t* button, double time) {
 	interp_update(&button->scale);
 	button->time += time;
 
-	int width = 0;
+	int width = mintg_font_width(res_font_menu, button->text);
 	int height = 20;
-	mintg_font_size(res_font_menu, button->text, &width, NULL);
 	double x = button->x - width / 2.0;
 	double y = button->y - height / 2.0;
 

@@ -21,19 +21,20 @@
 #include "main.h"
 
 typedef struct {
-	_Bool alive;
 	double time;
 	interp_t x;
 	interp_t y;
 	interp_t scale;
+	double health;
 } player_t;
 
 extern player_t player_qld;
 extern player_t player_nsw;
 
 void player_init();
-void player_update(double time);
+_Bool player_update(double time);
 void player_draw(_Bool game, double time);
+void player_kill(player_t* player, double time);
 player_t* player_active();
 
 #endif

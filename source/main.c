@@ -44,12 +44,11 @@ void scene_set(scene_t scene) {
 }
 
 int main(int argc, char* argv[]) {
-	const int window_size = 720;
-	mintg_init("Kage", window_size, window_size);
+	mintg_init("Kage", 720, 720);
 	mintg_input_hide(1);
 	res_init();
 
-	mintg_image_t* buffer = mintg_image_create(window_size * 2, window_size * 2, NULL);
+	mintg_image_t* buffer = mintg_image_create(mintg_width() * 2, mintg_height() * 2, NULL);
 	mintg_input_state_t key_f1;
 	_Bool ssaa = 1;
 
