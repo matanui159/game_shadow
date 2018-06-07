@@ -1,5 +1,5 @@
 /*
- * game.h
+ * death.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_GAME_H_
-#define SHADOW_GAME_H_
-#include "main.h"
+#ifndef SHADOW_SCENE_DEATH_H_
+#define SHADOW_SCENE_DEATH_H_
+#include "../main.h"
+#include "../player.h"
 
-void game_scene(scene_state_t state, double time);
+void death_init(player_t* player, mintg_image_t* buffer);
+void death_scene(scene_state_t state, double time);
 
 #endif

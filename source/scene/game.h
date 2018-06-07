@@ -1,5 +1,5 @@
 /*
- * tutorial.h
+ * game.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_TUTORIAL_H_
-#define SHADOW_TUTORIAL_H_
-#include "main.h"
+#ifndef SHADOW_SCENE_GAME_H_
+#define SHADOW_SCENE_GAME_H_
+#include "../main.h"
 
-void tutorial_scene(scene_state_t state, double time);
+void game_scene(scene_state_t state, double time);
 
 #endif

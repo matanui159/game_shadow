@@ -21,10 +21,14 @@
 #include "main.h"
 
 extern mintg_image_t* res_image_rect;
-extern mintg_image_t* res_image_rbutton;
-extern mintg_image_t* res_image_arrow;
-extern mintg_image_t* res_image_heart_left;
-extern mintg_image_t* res_image_heart_right;
+
+extern mintg_image_t* res_image_tut_hold;
+extern mintg_image_t* res_image_tut_move;
+extern mintg_image_t* res_image_tut_done;
+
+extern mintg_image_t* res_image_player_cursor;
+extern mintg_image_t* res_image_player_left;
+extern mintg_image_t* res_image_player_right;
 
 extern mintg_font_t* res_font_menu;
 extern mintg_font_t* res_font_menu_large;

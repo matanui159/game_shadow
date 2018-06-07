@@ -18,11 +18,12 @@
 
 #include "main.h"
 #include "res.h"
-#include "tutorial.h"
+#include "scene/tutorial.h"
 
 #define GAME_CLOCK 0.02
 
 static scene_t g_scene = tutorial_scene;
+static mintg_image_t* g_buffer;
 
 void interp_init(interp_t* interp, double value) {
 	interp->v = value;
@@ -41,6 +42,10 @@ void scene_set(scene_t scene) {
 	g_scene(SCENE_EXIT, 0);
 	g_scene = scene;
 	g_scene(SCENE_INIT, 0);
+}
+
+mintg_image_t* buffer_get() {
+	return g_buffer;
 }
 
 int main(int argc, char* argv[]) {
@@ -70,10 +75,14 @@ int main(int argc, char* argv[]) {
 		if (mintg_input_key(MINTG_INPUT_F1, &key_f1) == MINTG_INPUT_KEYDOWN_EVENT) {
 			ssaa = !ssaa;
 		}
+
 		if (ssaa) {
 			mintg_image_target(buffer);
 			mintg_push();
 			mintg_scale(2, 2);
+			g_buffer = buffer;
+		} else {
+			g_buffer = NULL;
 		}
 
 		g_scene(SCENE_DRAW, time);

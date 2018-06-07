@@ -17,47 +17,53 @@
  */
  
 #include "game.h"
-#include "res.h"
-#include "player.h"
-#include "shadow.h"
-#include "menu.h"
+#include "death.h"
+#include "../res.h"
+#include "../player.h"
+#include "../shadow.h"
+
 
 void game_scene(scene_state_t state, double time) {
 	static interp_t fade;
-	static _Bool exit;
+	static mintg_image_t* buffer;
 
 	if (state == SCENE_INIT) {
 
+		if (buffer == NULL) {
+			buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
+		}
 		interp_init(&fade, 1);
-		exit = 0;
 		player_init();
 		shadow_init();
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		if (player_update(time)) {
-			interp_init(&fade, 0);
-			exit = 1;
+		player_update(time);
+		player_t* player = shadow_update(time);
+		if (player != NULL) {
+			death_init(player, buffer);
+			scene_set(death_scene);
 		}
-		shadow_update(time);
-
-		if (exit) {
-			if (fade.v >= 1) {
-				scene_set(menu_scene);
-			}
-			fade.v += time;
-		} else {
-			fade.v -= time;
-		}
+		fade.v -= time;
 
 	} else if (state == SCENE_DRAW) {
 
-		mintg_color(1, 1, 1, 1);
+		mintg_image_target(buffer);
+		mintg_push();
+		mintg_identity();
+
+		mintg_color(0, 0, 0, 0);
 		mintg_clear();
 
 		player_draw(1, time);
 		shadow_draw();
+
+		mintg_pop();
+		mintg_image_target(buffer_get());
+		mintg_color(1, 1, 1, 1);
+		mintg_clear();
+		mintg_image_draw(buffer, NULL);
 
 		double alpha = interp_value(&fade, time);
 		mintg_push();

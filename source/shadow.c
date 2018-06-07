@@ -39,7 +39,6 @@ typedef struct shadow_t {
 
 static mint_array_t* g_shadows = NULL;
 static mintg_image_t* g_buffer = NULL;
-static _Bool g_kill;
 
 static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, double* dy) {
 	double rx = x - shadow->x;
@@ -70,12 +69,10 @@ void shadow_init() {
 	shadow->ty = shadow->y;
 	shadow->time = 0;
 	shadow->state = SHADOW_INIT;
-
 	fade_buffer_init(g_buffer);
-	g_kill = 0;
 }
 
-void shadow_update(double time) {
+player_t* shadow_update(double time) {
 	fade_buffer_update(g_buffer);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
@@ -123,13 +120,11 @@ void shadow_update(double time) {
 			}
 		}
 
-		if (!g_kill && player_qld.alive && qld_dist < 24) {
-			player_kill(&player_qld);
-			g_kill = 1;
+		if (player_qld.alive && qld_dist < 24) {
+			return &player_qld;
 		}
-		if (!g_kill && player_nsw.alive && nsw_dist < 24) {
-			player_kill(&player_nsw);
-			g_kill = 1;
+		if (player_nsw.alive && nsw_dist < 24) {
+			return &player_nsw;
 		}
 
 		const double shadow_clock = 0.001;
@@ -151,6 +146,7 @@ void shadow_update(double time) {
 		}
 	}
 	mintg_image_target(NULL);
+	return NULL;
 }
 
 void shadow_draw() {

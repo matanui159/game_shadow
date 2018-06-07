@@ -1,5 +1,5 @@
 /*
- * shadow.h
+ * menu.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,13 +16,10 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW__H_
-#define SHADOW__H_
-#include "main.h"
-#include "player.h"
+#ifndef SHADOW_SCENE_MENU_H_
+#define SHADOW_SCENE_MENU_H_
+#include "../main.h"
 
-void shadow_init();
-player_t* shadow_update(double time);
-void shadow_draw();
+void menu_scene(scene_state_t state, double time);
 
 #endif

@@ -1,5 +1,5 @@
-/*
- * shadow.h
+#[[
+ * CMakeLists.txt
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -14,15 +14,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+]]
 
-#ifndef SHADOW__H_
-#define SHADOW__H_
-#include "main.h"
-#include "player.h"
-
-void shadow_init();
-player_t* shadow_update(double time);
-void shadow_draw();
-
-#endif
+target_sources(shadow PRIVATE
+		"${CMAKE_CURRENT_SOURCE_DIR}/tutorial.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/death.c"
+)

@@ -1,5 +1,5 @@
 /*
- * menu.h
+ * tutorial.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_MENU_H_
-#define SHADOW_MENU_H_
-#include "main.h"
+#ifndef SHADOW_SCENE_TUTORIAL_H_
+#define SHADOW_SCENE_TUTORIAL_H_
+#include "../main.h"
 
-void menu_scene(scene_state_t state, double time);
+void tutorial_scene(scene_state_t state, double time);
 
 #endif
