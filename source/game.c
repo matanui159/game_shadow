@@ -30,6 +30,7 @@ void game_scene(scene_state_t state, double time) {
 
 		interp_init(&fade, 1);
 		exit = 0;
+		player_init();
 		shadow_init();
 
 	} else if (state == SCENE_UPDATE) {

@@ -21,7 +21,8 @@
 mintg_image_t* res_image_rect;
 mintg_image_t* res_image_rbutton;
 mintg_image_t* res_image_arrow;
-mintg_image_t* res_image_heart;
+mintg_image_t* res_image_heart_left;
+mintg_image_t* res_image_heart_right;
 
 mintg_font_t* res_font_menu;
 mintg_font_t* res_font_menu_large;
@@ -30,9 +31,10 @@ mintg_font_t* res_font_menu_small;
 void res_init() {
 	const uint8_t box_data[] = {0xFF, 0xFF, 0xFF, 0xFF};
 	res_image_rect = mintg_image_create(1, 1, box_data);
-	res_image_rbutton = mintg_image_load("res/rbutton_alt.png", MINT_FILE_LOCAL);
+	res_image_rbutton = mintg_image_load("res/rbutton.png", MINT_FILE_LOCAL);
 	res_image_arrow = mintg_image_load("res/arrow.png", MINT_FILE_LOCAL);
-	res_image_heart = mintg_image_load("res/heart.png", MINT_FILE_LOCAL);
+	res_image_heart_left = mintg_image_load("res/heart_left.png", MINT_FILE_LOCAL);
+	res_image_heart_right = mintg_image_load("res/heart_right.png", MINT_FILE_LOCAL);
 
 	res_font_menu = mintg_font_load("res/menu.ttf", MINT_FILE_LOCAL, 30);
 	res_font_menu_large = mintg_font_load("res/menu.ttf", MINT_FILE_LOCAL, 40);

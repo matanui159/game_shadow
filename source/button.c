@@ -36,7 +36,7 @@ _Bool button_update(button_t* button, double time) {
 
 	mintg_input_key(MINTG_INPUT_LBUTTON, &button->state);
 	player_t* player = player_active();
-	if (player->x.v > x && player->x.v < x + width && player->y.v > y && player->y.v < y + height) {
+	if (player->alive && player->x.v > x && player->x.v < x + width && player->y.v > y && player->y.v < y + height) {
 		button->hover = 1;
 		if (button->state == MINTG_INPUT_KEYUP || button->state == MINTG_INPUT_KEYUP_EVENT) {
 			interp_init(&button->scale, 1);

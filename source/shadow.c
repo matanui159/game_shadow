@@ -62,8 +62,8 @@ void shadow_init() {
 	}
 
 	shadow_t* shadow = mint_array_replace(g_shadows, 0, -1, 1);
-	shadow->x = -1000;
-	shadow->y = -1000;
+	shadow->x = -mintg_width();
+	shadow->y = -mintg_height();
 	shadow->vx = 0;
 	shadow->vy = 0;
 	shadow->tx = shadow->x;
@@ -111,7 +111,7 @@ void shadow_update(double time) {
 					break;
 
 				case SHADOW_MOVE:
-					if (qld_dist < nsw_dist) {
+					if (player_qld.alive && qld_dist < nsw_dist) {
 						shadow->tx = player_qld.x.v * 2 - shadow->x;
 						shadow->ty = player_qld.y.v * 2 - shadow->y;
 					} else {
@@ -123,12 +123,12 @@ void shadow_update(double time) {
 			}
 		}
 
-		if (!g_kill && player_qld.health > 0 && qld_dist < 24) {
-			player_kill(&player_qld, time);
+		if (!g_kill && player_qld.alive && qld_dist < 24) {
+			player_kill(&player_qld);
 			g_kill = 1;
 		}
-		if (!g_kill && player_nsw.health > 0 && nsw_dist < 24) {
-			player_kill(&player_nsw, time);
+		if (!g_kill && player_nsw.alive && nsw_dist < 24) {
+			player_kill(&player_nsw);
 			g_kill = 1;
 		}
 

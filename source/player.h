@@ -20,21 +20,33 @@
 #define SHADOW_PLAYER_H_
 #include "main.h"
 
-typedef struct {
+typedef struct player_part_t {
+	interp_t x;
+	interp_t y;
+	interp_t angle;
+	double vx;
+	double vy;
+	double vangle;
+} player_part_t;
+
+typedef struct player_t {
+	_Bool alive;
 	double time;
 	interp_t x;
 	interp_t y;
 	interp_t scale;
-	double health;
+	player_part_t left;
+	player_part_t right;
 } player_t;
 
 extern player_t player_qld;
 extern player_t player_nsw;
+extern player_t player_act;
 
 void player_init();
 _Bool player_update(double time);
 void player_draw(_Bool game, double time);
-void player_kill(player_t* player, double time);
+void player_kill(player_t* player);
 player_t* player_active();
 
 #endif
