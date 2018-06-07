@@ -46,7 +46,7 @@ static void half_init(half_t* half, player_t* player, double vx) {
 	half->vangle = -3 * vx;
 }
 
-static _Bool half_update(half_t* half, double time) {
+static void half_update(half_t* half, double time) {
 	interp_update(&half->x);
 	interp_update(&half->y);
 	interp_update(&half->angle);
@@ -56,7 +56,6 @@ static _Bool half_update(half_t* half, double time) {
 	half->x.v += half->vx * time;
 	half->y.v += half->vy * time;
 	half->angle.v += half->vangle * time;
-	return half->y.v < -mintg_height() / 2.0 - 32;
 }
 
 static void half_draw(half_t* half, double time, mintg_image_t* image) {
@@ -74,7 +73,7 @@ void death_scene(scene_state_t state, double time) {
 
 	if (state == SCENE_INIT) {
 
-		interp_init(&fade, 1);
+		interp_init(&fade, 2);
 		half_init(&left, g_player, -1);
 		half_init(&right, g_player, 1);
 
@@ -82,27 +81,30 @@ void death_scene(scene_state_t state, double time) {
 
 		interp_update(&fade);
 		fade.v -= time;
-		if (fade.v <= 0) {
+		if (fade.v <= 1) {
 			half_update(&left, time);
-			if (half_update(&right, time)) {
-				g_player->alive = 0;
-				scene_set(menu_scene);
-			}
-			fade.v = 0;
+			half_update(&right, time);
+		}
+		if (fade.v <= 0) {
+			g_player->alive = 0;
+			scene_set(menu_scene);
 		}
 
 	} else if (state == SCENE_DRAW) {
 
+		double alpha = interp_value(&fade, time);
+
 		mintg_color(1, 1, 1, 1);
 		mintg_clear();
 
-		mintg_color(g_player->r, g_player->g, g_player->b, 1);
+		mintg_color(g_player->r, g_player->g, g_player->b, alpha * alpha);
 		half_draw(&left, time, res_image_player_left);
 		half_draw(&right, time, res_image_player_right);
 
-		double alpha = interp_value(&fade, time);
-		mintg_color(1, 1, 1, alpha * alpha);
-		mintg_image_draw(g_buffer, NULL);
+		if (alpha >= 1) {
+			mintg_color(1, 1, 1, (alpha - 1) * (alpha - 1));
+			mintg_image_draw(g_buffer, NULL);
+		}
 
 	}
 }
