@@ -22,14 +22,16 @@ const char* const messages_normal[] = {
 		"I can't go back there",
 		"I've had enough",
 		"This is too much",
-		"I have to get out"
+		"I have to get out",
+		"Make it stop"
 };
-const int messages_normal_count = 4;
+const int messages_normal_count = 5;
 
 const char* const messages_easy[] = {
 		"You'll just be annoying",
   		"You're horrible",
 		"You're just acting weak",
-		"You don't need to drag anyone else down"
+		"You don't need to drag anyone else down",
+		"Just deal with it"
 };
-const int messages_easy_count = 4;
+const int messages_easy_count = 5;
