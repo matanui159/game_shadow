@@ -31,6 +31,7 @@ target_sources(shadow PRIVATE
 		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/player.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/shadow.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/messages.c"
 )
 
 add_subdirectory(scene)

@@ -57,7 +57,7 @@ void game_scene(scene_state_t state, double time) {
 		mintg_clear();
 
 		player_draw(1, time);
-		shadow_draw();
+		shadow_draw(time);
 
 		mintg_pop();
 		mintg_image_target(buffer_get());

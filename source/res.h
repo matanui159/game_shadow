@@ -30,9 +30,11 @@ extern mintg_image_t* res_image_player_cursor;
 extern mintg_image_t* res_image_player_left;
 extern mintg_image_t* res_image_player_right;
 
-extern mintg_font_t* res_font_menu;
-extern mintg_font_t* res_font_menu_large;
-extern mintg_font_t* res_font_menu_small;
+extern mintg_font_t* res_font_clean;
+extern mintg_font_t* res_font_clean_large;
+extern mintg_font_t* res_font_clean_small;
+
+extern mintg_font_t* res_font_messy;
 
 void res_init();
 

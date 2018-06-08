@@ -1,5 +1,5 @@
 /*
- * fade_buffer.h
+ * messages.c
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -15,13 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+#include "messages.h"
 
-#ifndef SHADOW_FADE_BUFFER_H_
-#define SHADOW_FADE_BUFFER_H_
-#include "main.h"
+const char* const messages_normal[] = {
+		"I can't go back there",
+		"I've had enough",
+		"This is too much",
+		"I have to get out"
+};
+const int messages_normal_count = 4;
 
-void fade_buffer_init(mintg_image_t* buffer);
-void fade_buffer_update(mintg_image_t* buffer, double time);
-void fade_buffer_draw(mintg_image_t* buffer, double time);
-
-#endif
+const char* const messages_easy[] = {
+		"You'll just be annoying",
+  		"You're horrible",
+		"You're just acting weak",
+		"You don't need to drag anyone else down"
+};
+const int messages_easy_count = 4;

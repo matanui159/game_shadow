@@ -29,7 +29,7 @@ _Bool button_update(button_t* button, double time) {
 	interp_update(&button->scale);
 	button->time += time;
 
-	int width = mintg_font_width(res_font_menu, button->text);
+	int width = mintg_font_width(res_font_clean, button->text);
 	int height = 20;
 	double x = button->x - width / 2.0;
 	double y = button->y - height / 2.0;
@@ -60,13 +60,13 @@ void button_draw(button_t* button, double time) {
 	mintg_scale(scale, scale);
 	mintg_translate(0, 5);
 	mintg_color(1, 1, 1, 1);
-	mintg_font_draw(res_font_menu, button->text);
+	mintg_font_draw(res_font_clean, button->text);
 	mintg_pop();
 
 	if (button->hover) {
 		mintg_push();
 		mintg_translate(0, -200);
-		mintg_font_draw(res_font_menu_small, button->info);
+		mintg_font_draw(res_font_clean_small, button->info);
 		mintg_pop();
 	}
 }

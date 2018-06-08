@@ -81,7 +81,7 @@ void tutorial_scene(scene_state_t state, double time) {
 		mintg_image_draw(image, NULL);
 		mintg_push();
 		mintg_translate(0, -50);
-		mintg_font_draw(res_font_menu, text);
+		mintg_font_draw(res_font_clean, text);
 		mintg_pop();
 
 		player_draw(0, time);

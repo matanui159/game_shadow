@@ -23,6 +23,6 @@
 
 void shadow_init();
 player_t* shadow_update(double time);
-void shadow_draw();
+void shadow_draw(double time);
 
 #endif

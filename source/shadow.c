@@ -73,7 +73,7 @@ void shadow_init() {
 }
 
 player_t* shadow_update(double time) {
-	fade_buffer_update(g_buffer);
+	fade_buffer_update(g_buffer, time * 2);
 	for (int i = 0; i < mint_array_size(g_shadows); ++i) {
 		shadow_t* shadow = mint_array_get(g_shadows, i);
 
@@ -149,6 +149,6 @@ player_t* shadow_update(double time) {
 	return NULL;
 }
 
-void shadow_draw() {
-	mintg_image_draw(g_buffer, NULL);
+void shadow_draw(double time) {
+	fade_buffer_draw(g_buffer, time * 2);
 }

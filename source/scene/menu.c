@@ -19,12 +19,27 @@
 #include "menu.h"
 #include "game.h"
 #include "../res.h"
+#include "../fade_buffer.h"
 #include "../button.h"
 #include "../player.h"
+#include "../messages.h"
+
+static void menu_message(const char* const* messages, int count) {
+	mintg_push();
+	mintg_translate(
+			mint_random(-mintg_width() / 2.0, mintg_width() / 2.0),
+			mint_random(-mintg_height() / 2.0, mintg_height() / 2.0)
+	);
+	mintg_color(0.5, 0.5, 0.5, 1);
+	mintg_font_draw(res_font_messy, messages[(int)mint_random(0, count)]);
+	mintg_pop();
+}
 
 void menu_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static _Bool exit;
+	static mintg_image_t* buffer;
+	static int count;
 
 	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
 	static button_t btn_easy = {"EASY", "Get help", 0, -100};
@@ -33,6 +48,12 @@ void menu_scene(scene_state_t state, double time) {
 
 		interp_init(&fade, 1);
 		exit = 0;
+		if (buffer == NULL) {
+			buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
+		}
+		fade_buffer_init(buffer);
+		count = 0;
+
 		button_init(&btn_normal);
 		button_init(&btn_easy);
 		player_init();
@@ -41,13 +62,35 @@ void menu_scene(scene_state_t state, double time) {
 
 		interp_update(&fade);
 		player_update(time);
-		if (button_update(&btn_normal, time) && !exit) {\
-			if (fade.v < 0) {
-				interp_init(&fade, 0);
+
+		fade_buffer_update(buffer, time / 3);
+		if (button_update(&btn_normal, time)) {
+			if (!player_qld.alive && !player_nsw.alive) {
+				menu_message(messages_normal, messages_normal_count);
+				++count;
+			} else if (!exit) {
+				if (fade.v < 0) {
+					interp_init(&fade, 0);
+				}
+				exit = 1;
 			}
-			exit = 1;
 		}
-		button_update(&btn_easy, time);
+
+		if (!player_qld.alive || !player_nsw.alive) {
+			if (button_update(&btn_easy, time)) {
+				menu_message(messages_easy, messages_easy_count);
+				++count;
+			}
+		}
+
+		if (!player_qld.alive && !player_nsw.alive && count > 10) {
+			if (mint_random(0, 1) < 0.5) {
+				menu_message(messages_normal, messages_normal_count);
+			} else {
+				menu_message(messages_easy, messages_easy_count);
+			}
+		}
+		mintg_image_target(NULL);
 
 		if (exit) {
 			fade.v += time;
@@ -63,14 +106,18 @@ void menu_scene(scene_state_t state, double time) {
 		mintg_color(0, 0, 0, 1);
 		mintg_clear();
 
+		fade_buffer_draw(buffer, time / 3);
+
 		mintg_push();
 		mintg_translate(0, 200);
 		mintg_color(1, 1, 1, 1);
-		mintg_font_draw(res_font_menu_large, "Choose your difficulty");
+		mintg_font_draw(res_font_clean_large, "Choose your difficulty");
 		mintg_pop();
 
 		button_draw(&btn_normal, time);
-//		button_draw(&btn_easy, time);
+		if (!player_qld.alive || !player_nsw.alive) {
+			button_draw(&btn_easy, time);
+		}
 
 		player_draw(0, time);
 
