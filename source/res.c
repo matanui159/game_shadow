@@ -18,7 +18,6 @@
  
 #include "res.h"
 
-typedef void *void;
 mintg_image_t* res_image_rect;
 mintg_image_t* res_image_circle;
 
