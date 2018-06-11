@@ -21,6 +21,7 @@
 #include "main.h"
 
 extern mintg_image_t* res_image_rect;
+extern mintg_image_t* res_image_circle;
 
 extern mintg_image_t* res_image_tut_hold;
 extern mintg_image_t* res_image_tut_move;

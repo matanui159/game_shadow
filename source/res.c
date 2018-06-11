@@ -19,6 +19,7 @@
 #include "res.h"
 
 mintg_image_t* res_image_rect;
+mintg_image_t* res_image_circle;
 
 mintg_image_t* res_image_tut_hold;
 mintg_image_t* res_image_tut_move;
@@ -37,6 +38,7 @@ mintg_font_t* res_font_messy;
 void res_init() {
 	const uint8_t box_data[] = {0xFF, 0xFF, 0xFF, 0xFF};
 	res_image_rect = mintg_image_create(1, 1, box_data);
+	res_image_circle = mintg_image_load("res/image/circle.png", MINT_FILE_LOCAL);
 
 	res_image_tut_hold = mintg_image_load("res/image/tut/hold.png", MINT_FILE_LOCAL);
 	res_image_tut_move = mintg_image_load("res/image/tut/move.png", MINT_FILE_LOCAL);
