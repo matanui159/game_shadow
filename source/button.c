@@ -43,7 +43,11 @@ _Bool button_update(button_t* button, double time) {
 		} else {
 			interp_init(&button->scale, 0.9);
 		}
+		if (button->state == MINTG_INPUT_KEYDOWN_EVENT) {
+			minta_sound_play(res_sound_down);
+		}
 		if (button->state == MINTG_INPUT_KEYUP_EVENT) {
+			minta_sound_play(res_sound_up);
 			return 1;
 		}
 	} else {

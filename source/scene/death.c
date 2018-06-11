@@ -82,6 +82,9 @@ void death_scene(scene_state_t state, double time) {
 		interp_update(&fade);
 		fade.v -= time;
 		if (fade.v <= 1) {
+			if (fade.old > 1) {
+				minta_sound_play(res_sound_break);
+			}
 			half_update(&left, time);
 			half_update(&right, time);
 		}
@@ -105,6 +108,10 @@ void death_scene(scene_state_t state, double time) {
 			mintg_color(1, 1, 1, (alpha - 1) * (alpha - 1));
 			mintg_image_draw(g_buffer, NULL);
 		}
+
+	} else if (state == SCENE_EXIT) {
+
+		mintg_image_destroy(g_buffer);
 
 	}
 }

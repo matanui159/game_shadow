@@ -56,13 +56,8 @@ static double shadow_dist(shadow_t* shadow, double x, double y, double* dx, doub
 }
 
 void shadow_init() {
-	if (g_shadows == NULL) {
-		g_shadows = mint_array_create(sizeof(shadow_t));
-	}
-	if (g_buffer == NULL) {
-		g_buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
-	}
-
+	g_shadows = mint_array_create(sizeof(shadow_t));
+	g_buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
 	shadow_t* shadow = mint_array_replace(g_shadows, 0, -1, 1);
 	shadow->x = -mintg_width();
 	shadow->y = -mintg_height();
@@ -179,4 +174,9 @@ void shadow_draw(double time) {
 		mintg_pop();
 	}
 	fade_buffer_draw(g_buffer, time * 2);
+}
+
+void shadow_exit() {
+	mintg_image_destroy(g_buffer);
+	mint_array_destroy(g_shadows);
 }

@@ -30,7 +30,7 @@ static void player_init1(player_t* player, double x, double r, double g, double 
 	player->time = 0;
 	interp_init(&player->x, x);
 	interp_init(&player->y, -100);
-	interp_init(&player->scale, 1);
+	interp_init(&player->scale, 0);
 	player->r = r;
 	player->g = g;
 	player->b = b;
@@ -70,9 +70,16 @@ static void player_update1(player_t* player, double time, _Bool active) {
 		}
 
 		player->time += time;
-		double s0 = cos(player->time * 20 + M_PI);
-		double s1 = cos(player->time * 10);
-		player->scale.v = (s0 + 1) * (s1 + 1) / 15 + 0.8;
+		player->scale.v = pow(0.001, time) * player->scale.v;
+		if (player->time >= 0.6 && player->time < 0.6 + time) {
+			player->scale.v = 0.2;
+		}
+		if (player->time >= 0.8 && player->time < 0.8 + time) {
+			player->scale.v = 0.2;
+		}
+		if (player->time >= 1) {
+			player->time = 0;
+		}
 	}
 }
 
@@ -101,6 +108,21 @@ void player_update(double time) {
 	if (!player_qld.alive && !player_nsw.alive) {
 		player_update1(&player_act, time, 1);
 	}
+
+	double timer = 0;
+	if (player_qld.alive) {
+		timer = player_qld.time;
+	}
+	if (player_nsw.alive) {
+		timer = player_nsw.time;
+	}
+
+	if (timer >= 0.6 && timer < 0.6 + time) {
+		minta_sound_play(res_sound_beat);
+	}
+	if (timer >= 0.8 && timer < 0.8 + time) {
+		minta_sound_play(res_sound_beat);
+	}
 }
 
 static void player_draw1(player_t* player, _Bool game, double time) {
@@ -109,7 +131,7 @@ static void player_draw1(player_t* player, _Bool game, double time) {
 		mintg_translate(interp_value(&player->x, time), interp_value(&player->y, time));
 		mintg_color(player->r, player->g, player->b, 1);
 		if (game) {
-			double scale = interp_value(&player->scale, time);
+			double scale = 0.8 + interp_value(&player->scale, time);
 			mintg_scale(scale, scale);
 			mintg_image_draw(res_image_player_left, NULL);
 			mintg_image_draw(res_image_player_right, NULL);

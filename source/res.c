@@ -18,6 +18,7 @@
  
 #include "res.h"
 
+typedef void *void;
 mintg_image_t* res_image_rect;
 mintg_image_t* res_image_circle;
 
@@ -34,6 +35,21 @@ mintg_font_t* res_font_clean_large;
 mintg_font_t* res_font_clean_small;
 
 mintg_font_t* res_font_messy;
+
+minta_sound_t* res_sound_down;
+minta_sound_t* res_sound_up;
+minta_sound_t* res_sound_beat;
+minta_sound_t* res_sound_break;
+
+minta_music_t* res_music_noise;
+
+static int noise_stream(int size, void* data, void* user) {
+	uint8_t* raw = data;
+	for (int i = 0; i < size; ++i) {
+		raw[i] = (uint8_t)mint_random(0, UINT8_MAX);
+	}
+	return size;
+}
 
 void res_init() {
 	const uint8_t box_data[] = {0xFF, 0xFF, 0xFF, 0xFF};
@@ -53,4 +69,11 @@ void res_init() {
 	res_font_clean_small = mintg_font_load("res/font/clean.ttf", MINT_FILE_LOCAL, 20);
 
 	res_font_messy = mintg_font_load("res/font/messy.ttf", MINT_FILE_LOCAL, 40);
+
+	res_sound_down = minta_sound_load("res/sound/down.ogg", MINT_FILE_LOCAL);
+	res_sound_up = minta_sound_load("res/sound/up.ogg", MINT_FILE_LOCAL);
+	res_sound_beat = minta_sound_load("res/sound/beat.ogg", MINT_FILE_LOCAL);
+	res_sound_break = minta_sound_load("res/sound/break.ogg", MINT_FILE_LOCAL);
+
+	res_music_noise = minta_music_create(MINTA_STEREO8, 44100, noise_stream, NULL);
 }

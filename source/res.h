@@ -37,6 +37,13 @@ extern mintg_font_t* res_font_clean_small;
 
 extern mintg_font_t* res_font_messy;
 
+extern minta_sound_t* res_sound_down;
+extern minta_sound_t* res_sound_up;
+extern minta_sound_t* res_sound_beat;
+extern minta_sound_t* res_sound_break;
+
+extern minta_music_t* res_music_noise;
+
 void res_init();
 
 #endif

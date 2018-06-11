@@ -51,6 +51,7 @@ mintg_image_t* buffer_get() {
 int main(int argc, char* argv[]) {
 	mintg_init("Kage", 720, 720);
 	mintg_input_hide(1);
+	minta_init();
 	res_init();
 
 	mintg_image_t* buffer = mintg_image_create(mintg_width() * 2, mintg_height() * 2, NULL);

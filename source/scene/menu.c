@@ -40,6 +40,8 @@ void menu_scene(scene_state_t state, double time) {
 	static _Bool exit;
 	static mintg_image_t* buffer;
 	static int count;
+	static double spam;
+	const int max_count = 10;
 
 	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
 	static button_t btn_easy = {"EASY", "Get help", 0, -100};
@@ -57,11 +59,14 @@ void menu_scene(scene_state_t state, double time) {
 		button_init(&btn_normal);
 		button_init(&btn_easy);
 		player_init();
+		minta_music_volume(res_music_noise, 0);
+		minta_music_play(res_music_noise);
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
 		player_update(time);
+		minta_music_update(res_music_noise);
 
 		fade_buffer_update(buffer, time / 3);
 		if (button_update(&btn_normal, time)) {
@@ -83,13 +88,19 @@ void menu_scene(scene_state_t state, double time) {
 			}
 		}
 
-		if (!player_qld.alive && !player_nsw.alive && count > 10) {
-			if (mint_random(0, 1) < 0.5) {
-				menu_message(messages_normal, messages_normal_count);
-			} else {
-				menu_message(messages_easy, messages_easy_count);
+		if (!player_qld.alive && !player_nsw.alive && count >= max_count) {
+			spam += time;
+			for (int i = 0; i < spam; ++i) {
+				if (mint_random(0, 1) < 0.5) {
+					menu_message(messages_normal, messages_normal_count);
+				} else {
+					menu_message(messages_easy, messages_easy_count);
+				}
 			}
+			count = max_count;
 		}
+		double volume = (double)count / max_count;
+		minta_music_volume(res_music_noise, volume * volume * volume);
 		mintg_image_target(NULL);
 
 		if (exit) {
@@ -127,6 +138,10 @@ void menu_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
+
+	} else if (state == SCENE_EXIT) {
+
+		minta_music_stop(res_music_noise);
 
 	}
 }

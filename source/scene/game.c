@@ -22,16 +22,13 @@
 #include "../player.h"
 #include "../shadow.h"
 
-
 void game_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static mintg_image_t* buffer;
 
 	if (state == SCENE_INIT) {
 
-		if (buffer == NULL) {
-			buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
-		}
+		buffer = mintg_image_create(mintg_width(), mintg_height(), NULL);
 		interp_init(&fade, 1);
 		player_init();
 		shadow_init();
@@ -71,6 +68,10 @@ void game_scene(scene_state_t state, double time) {
 		mintg_color(1, 1, 1, alpha * (2 - alpha));
 		mintg_image_draw(res_image_rect, NULL);
 		mintg_pop();
+
+	} else if (state == SCENE_EXIT) {
+
+		shadow_exit();
 
 	}
 }
