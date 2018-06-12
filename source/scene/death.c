@@ -96,7 +96,7 @@ void death_scene(scene_state_t state, double time) {
 		if (volume < 0) {
 			volume = 0;
 		}
-		minta_music_volume(res_music_game, volume * volume * 1);
+		minta_music_volume(res_music_game, volume * volume);
 		minta_music_update(res_music_game);
 	} else if (state == SCENE_DRAW) {
 

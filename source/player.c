@@ -26,7 +26,7 @@ static _Bool g_init = 0;
 static mintg_input_state_t g_state;
 
 static void player_init1(player_t* player, double x, double r, double g, double b) {
-	player->alive = 0;
+	player->alive = 1;
 	player->time = 0;
 	interp_init(&player->x, x);
 	interp_init(&player->y, -100);
@@ -41,7 +41,6 @@ void player_init() {
 		player_init1(&player_qld, -100, 0.6, 0, 0.2);
 		player_init1(&player_nsw, 100, 0.2, 0, 0.6);
 		player_init1(&player_act, 0, 1, 1, 1);
-		player_act.alive = 1;
 		g_init = 1;
 	}
 }

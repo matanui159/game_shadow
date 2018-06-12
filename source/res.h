@@ -22,7 +22,6 @@
 
 extern mintg_image_t* res_image_rect;
 extern mintg_image_t* res_image_circle;
-extern mintg_image_t* res_image_eye;
 
 extern mintg_image_t* res_image_tut_hold;
 extern mintg_image_t* res_image_tut_move;
@@ -31,6 +30,8 @@ extern mintg_image_t* res_image_tut_done;
 extern mintg_image_t* res_image_player_cursor;
 extern mintg_image_t* res_image_player_left;
 extern mintg_image_t* res_image_player_right;
+
+extern mintg_image_t* res_image_eye[];
 
 extern mintg_font_t* res_font_clean;
 extern mintg_font_t* res_font_clean_large;
@@ -45,6 +46,7 @@ extern minta_sound_t* res_sound_break;
 
 extern minta_music_t* res_music_game;
 extern minta_music_t* res_music_noise;
+extern minta_music_t* res_music_end;
 
 void res_init();
 

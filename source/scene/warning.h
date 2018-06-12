@@ -1,5 +1,5 @@
-#[[
- * CMakeLists.txt
+/*
+ * warning.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -14,13 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-]]
+ */
 
-target_sources(shadow PRIVATE
-		"${CMAKE_CURRENT_SOURCE_DIR}/warning.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/tutorial.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/death.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/end.c"
-)
+#ifndef SHADOW_SCENE_WARNING_H_
+#define SHADOW_SCENE_WARNING_H_
+#include "../main.h"
+
+void warning_scene(scene_state_t state, double time);
+
+#endif

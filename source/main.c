@@ -18,13 +18,11 @@
 
 #include "main.h"
 #include "res.h"
-#include "scene/tutorial.h"
-
-#include "scene/menu.h"
+#include "scene/warning.h"
 
 #define GAME_CLOCK 0.02
 
-static scene_t g_scene = menu_scene;
+static scene_t g_scene = warning_scene;
 static mintg_image_t* g_buffer;
 
 void interp_init(interp_t* interp, double value) {
