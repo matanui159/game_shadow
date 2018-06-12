@@ -55,5 +55,3 @@ dkms.conf
 /.idea/
 /cmake-build-*/
 /release/
-
-/res/music/*
