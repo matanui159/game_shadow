@@ -36,7 +36,7 @@ extern player_t player_nsw;
 extern player_t player_act;
 
 void player_init();
-void player_update(double time);
+void player_update(_Bool game, double time);
 void player_draw(_Bool game, double time);
 player_t* player_active();
 

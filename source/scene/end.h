@@ -1,5 +1,5 @@
 /*
- * messages.h
+ * end.h
  *
  * Copyright 2018 Joshua Michael Minter
  *
@@ -16,16 +16,10 @@
  * limitations under the License.
  */
 
-#ifndef SHADOW_MESSAGES_H_
-#define SHADOW_MESSAGES_H_
+#ifndef SHADOW_SCENE_END_H_
+#define SHADOW_SCENE_END_H_
+#include "../main.h"
 
-extern const char* const messages_normal[];
-extern const int messages_normal_count;
-
-extern const char* const messages_easy[];
-extern const int messages_easy_count;
-
-extern const char* const messages_end[];
-extern const int messages_end_count;
+void end_scene(scene_state_t state, double time);
 
 #endif

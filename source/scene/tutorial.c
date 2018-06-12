@@ -36,7 +36,7 @@ void tutorial_scene(scene_state_t state, double time) {
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		player_update(time);
+		player_update(0, time);
 
 		if (!exit) {
 			double dx = player_nsw.x.v - player_nsw.x.old;

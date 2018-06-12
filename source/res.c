@@ -20,6 +20,7 @@
 
 mintg_image_t* res_image_rect;
 mintg_image_t* res_image_circle;
+mintg_image_t* res_image_eye;
 
 mintg_image_t* res_image_tut_hold;
 mintg_image_t* res_image_tut_move;
@@ -40,6 +41,7 @@ minta_sound_t* res_sound_up;
 minta_sound_t* res_sound_beat;
 minta_sound_t* res_sound_break;
 
+minta_music_t* res_music_game;
 minta_music_t* res_music_noise;
 
 static int noise_stream(int size, void* data, void* user) {
@@ -54,6 +56,7 @@ void res_init() {
 	const uint8_t box_data[] = {0xFF, 0xFF, 0xFF, 0xFF};
 	res_image_rect = mintg_image_create(1, 1, box_data);
 	res_image_circle = mintg_image_load("res/image/circle.png", MINT_FILE_LOCAL);
+	res_image_eye = mintg_image_load("res/image/eye.png", MINT_FILE_LOCAL);
 
 	res_image_tut_hold = mintg_image_load("res/image/tut/hold.png", MINT_FILE_LOCAL);
 	res_image_tut_move = mintg_image_load("res/image/tut/move.png", MINT_FILE_LOCAL);
@@ -74,5 +77,6 @@ void res_init() {
 	res_sound_beat = minta_sound_load("res/sound/beat.ogg", MINT_FILE_LOCAL);
 	res_sound_break = minta_sound_load("res/sound/break.ogg", MINT_FILE_LOCAL);
 
+	res_music_game = minta_music_load("res/music/game_alt.ogg", MINT_FILE_LOCAL);
 	res_music_noise = minta_music_create(MINTA_STEREO8, 44100, noise_stream, NULL);
 }

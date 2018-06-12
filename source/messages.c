@@ -37,3 +37,14 @@ const char* const messages_easy[] = {
 		"Be a man"
 };
 const int messages_easy_count = 6;
+
+const char* const messages_end[] = {
+		"Note to self",
+		"I am not being annoying",
+		"I am not being weak",
+		"I am not bringing others down",
+		"Sometimes people need help",
+		"It is three simple words",
+		"\"I'm not ok\""
+};
+const int messages_end_count = 7;

@@ -32,16 +32,19 @@ void game_scene(scene_state_t state, double time) {
 		interp_init(&fade, 1);
 		player_init();
 		shadow_init();
+		minta_music_play(res_music_game);
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		player_update(time);
+		player_update(1, time);
 		player_t* player = shadow_update(time);
 		if (player != NULL) {
 			death_init(player, buffer);
 			scene_set(death_scene);
 		}
+		minta_music_volume(res_music_game, 1);
+		minta_music_update(res_music_game);
 		fade.v -= time;
 
 	} else if (state == SCENE_DRAW) {

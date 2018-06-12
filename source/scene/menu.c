@@ -18,6 +18,7 @@
  
 #include "menu.h"
 #include "game.h"
+#include "end.h"
 #include "../res.h"
 #include "../fade_buffer.h"
 #include "../button.h"
@@ -40,8 +41,8 @@ void menu_scene(scene_state_t state, double time) {
 	static _Bool exit;
 	static mintg_image_t* buffer;
 	static int count;
+	static double noise;
 	static double spam;
-	const int max_count = 10;
 
 	static button_t btn_normal = {"NORMAL", "Handle it yourself", 0, 0};
 	static button_t btn_easy = {"EASY", "Get help", 0, -100};
@@ -55,6 +56,8 @@ void menu_scene(scene_state_t state, double time) {
 		}
 		fade_buffer_init(buffer);
 		count = 0;
+		noise = 0;
+		spam = 0;
 
 		button_init(&btn_normal);
 		button_init(&btn_easy);
@@ -65,7 +68,7 @@ void menu_scene(scene_state_t state, double time) {
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
-		player_update(time);
+		player_update(0, time);
 		minta_music_update(res_music_noise);
 
 		fade_buffer_update(buffer, time / 3);
@@ -88,19 +91,23 @@ void menu_scene(scene_state_t state, double time) {
 			}
 		}
 
-		if (!player_qld.alive && !player_nsw.alive && count >= max_count) {
+		if (!player_qld.alive && !player_nsw.alive && count > 8) {
+			noise += time / 5;
 			spam += time;
-			for (int i = 0; i < spam; ++i) {
+			double delta = 0.01 / noise;
+			while (spam >= delta) {
 				if (mint_random(0, 1) < 0.5) {
 					menu_message(messages_normal, messages_normal_count);
 				} else {
 					menu_message(messages_easy, messages_easy_count);
 				}
+				spam -= delta;
 			}
-			count = max_count;
+			if (noise > 1) {
+				scene_set(end_scene);
+			}
 		}
-		double volume = (double)count / max_count;
-		minta_music_volume(res_music_noise, volume * volume * volume);
+		minta_music_volume(res_music_noise, noise * noise);
 		mintg_image_target(NULL);
 
 		if (exit) {

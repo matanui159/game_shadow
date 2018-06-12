@@ -92,7 +92,12 @@ void death_scene(scene_state_t state, double time) {
 			g_player->alive = 0;
 			scene_set(menu_scene);
 		}
-
+		double volume = fade.v - 1;
+		if (volume < 0) {
+			volume = 0;
+		}
+		minta_music_volume(res_music_game, volume * volume * 1);
+		minta_music_update(res_music_game);
 	} else if (state == SCENE_DRAW) {
 
 		double alpha = interp_value(&fade, time);
@@ -112,6 +117,7 @@ void death_scene(scene_state_t state, double time) {
 	} else if (state == SCENE_EXIT) {
 
 		mintg_image_destroy(g_buffer);
+		minta_music_stop(res_music_game);
 
 	}
 }

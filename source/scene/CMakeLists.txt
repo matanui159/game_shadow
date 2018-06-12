@@ -21,4 +21,5 @@ target_sources(shadow PRIVATE
 		"${CMAKE_CURRENT_SOURCE_DIR}/menu.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/death.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/end.c"
 )

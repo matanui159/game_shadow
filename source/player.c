@@ -26,7 +26,7 @@ static _Bool g_init = 0;
 static mintg_input_state_t g_state;
 
 static void player_init1(player_t* player, double x, double r, double g, double b) {
-	player->alive = 1;
+	player->alive = 0;
 	player->time = 0;
 	interp_init(&player->x, x);
 	interp_init(&player->y, -100);
@@ -41,6 +41,7 @@ void player_init() {
 		player_init1(&player_qld, -100, 0.6, 0, 0.2);
 		player_init1(&player_nsw, 100, 0.2, 0, 0.6);
 		player_init1(&player_act, 0, 1, 1, 1);
+		player_act.alive = 1;
 		g_init = 1;
 	}
 }
@@ -83,25 +84,33 @@ static void player_update1(player_t* player, double time, _Bool active) {
 	}
 }
 
-void player_update(double time) {
+void player_update(_Bool game, double time) {
 	mintg_input_key(MINTG_INPUT_RBUTTON, &g_state);
 	switch (g_state) {
 		case MINTG_INPUT_KEYUP_EVENT:
-			if (player_qld.alive) {
+			if (player_qld.alive && player_nsw.alive) {
 				mintg_input_set(player_qld.x.v, player_qld.y.v);
 			}
 		case MINTG_INPUT_KEYUP:
-			player_update1(&player_qld, time, 1);
-			player_update1(&player_nsw, time, 0);
+			if (player_qld.alive) {
+				player_update1(&player_qld, time, 1);
+				player_update1(&player_nsw, time, 0);
+			} else {
+				player_update1(&player_nsw, time, 1);
+			}
 			break;
 
 		case MINTG_INPUT_KEYDOWN_EVENT:
-			if (player_nsw.alive) {
+			if (player_qld.alive && player_nsw.alive) {
 				mintg_input_set(player_nsw.x.v, player_nsw.y.v);
 			}
 		case MINTG_INPUT_KEYDOWN:
-			player_update1(&player_qld, time, 0);
-			player_update1(&player_nsw, time, 1);
+			if (player_nsw.alive) {
+				player_update1(&player_qld, time, 0);
+				player_update1(&player_nsw, time, 1);
+			} else {
+				player_update1(&player_qld, time, 1);
+			}
 			break;
 	}
 
@@ -109,19 +118,17 @@ void player_update(double time) {
 		player_update1(&player_act, time, 1);
 	}
 
-	double timer = 0;
-	if (player_qld.alive) {
-		timer = player_qld.time;
-	}
-	if (player_nsw.alive) {
-		timer = player_nsw.time;
-	}
-
-	if (timer >= 0.6 && timer < 0.6 + time) {
-		minta_sound_play(res_sound_beat);
-	}
-	if (timer >= 0.8 && timer < 0.8 + time) {
-		minta_sound_play(res_sound_beat);
+	if (game) {
+		double timer = player_qld.time;
+		if (!player_qld.alive) {
+			timer = player_nsw.time;
+		}
+		if (timer >= 0.6 && timer < 0.6 + time) {
+			minta_sound_play(res_sound_beat);
+		}
+		if (timer >= 0.8 && timer < 0.8 + time) {
+			minta_sound_play(res_sound_beat);
+		}
 	}
 }
 
@@ -154,7 +161,11 @@ player_t* player_active() {
 	if (!player_qld.alive && !player_nsw.alive) {
 		return &player_act;
 	}
-	if (g_state == MINTG_INPUT_KEYUP || g_state == MINTG_INPUT_KEYUP_EVENT) {
+	if (!player_qld.alive) {
+		return &player_nsw;
+	} else if (!player_nsw.alive) {
+		return &player_qld;
+	} else if (g_state == MINTG_INPUT_KEYUP || g_state == MINTG_INPUT_KEYUP_EVENT) {
 		return &player_qld;
 	} else {
 		return &player_nsw;
