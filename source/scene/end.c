@@ -113,7 +113,7 @@ void end_scene(scene_state_t state, double time) {
 
 				mintg_push();
 				mintg_translate(200, -250);
-				mintg_font_draw(res_font_clean_small, "Music by Bensound.org");
+				mintg_font_draw(res_font_clean_small, "Music by Bensound.com");
 				mintg_pop();
 			}
 
