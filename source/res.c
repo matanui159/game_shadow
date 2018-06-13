@@ -46,25 +46,35 @@ minta_music_t* res_music_game;
 minta_music_t* res_music_noise;
 minta_music_t* res_music_end;
 
-typedef struct noise_t {
+typedef struct noise_mono_t {
 	uint8_t counter;
-	double parts[5];
+	double parts[9];
 	double total;
+} noise_mono_t;
+
+typedef struct noise_t {
+	noise_mono_t left;
+	noise_mono_t right;
 } noise_t;
+
+static uint8_t noise_mono_stream(noise_mono_t* noise) {
+	++noise->counter;
+	int p = 8;
+	if (noise->counter != 0) {
+		p = __builtin_ctz(noise->counter);
+	}
+	noise->total -= noise->parts[p];
+	noise->parts[p] = mint_random(-0.1, 0.1);
+	noise->total += noise->parts[p];
+	return (uint8_t)((noise->total + 1) * 128);
+}
 
 static int noise_stream(int size, void* data, void* user) {
 	noise_t* noise = user;
 	uint8_t* raw = data;
-	for (int i = 0; i < size; ++i) {
-		noise->counter = (uint8_t)((noise->counter + 1u) & 0xFu);
-		int p = 4;
-		if (noise->counter != 0) {
-			p = __builtin_clz(noise->counter);
-		}
-		noise->total -= noise->parts[p];
-		noise->parts[p] = mint_random(-0.2, 0.2);
-		noise->total += noise->parts[p];
-		raw[i] = (uint8_t)((noise->total + 1) * 128);
+	for (int i = 0; i < size; i += 2) {
+		raw[i + 0] = noise_mono_stream(&noise->left);
+		raw[i + 1] = noise_mono_stream(&noise->right);
 	}
 	return size;
 }
@@ -104,7 +114,7 @@ void res_init() {
 
 	static noise_t noise;
 	res_music_game = minta_music_load("res/music/game.ogg", MINT_FILE_LOCAL);
-	res_music_noise = minta_music_create(MINTA_MONO8, 44100, noise_stream, &noise);
+	res_music_noise = minta_music_create(MINTA_STEREO8, 44100, noise_stream, &noise);
 	res_music_end = minta_music_load("res/music/end.ogg", MINT_FILE_LOCAL);
 
 	mintg_image_t* icon = mintg_image_load("res/image/icon.png", MINT_FILE_LOCAL);
