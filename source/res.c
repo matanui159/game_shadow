@@ -46,10 +46,25 @@ minta_music_t* res_music_game;
 minta_music_t* res_music_noise;
 minta_music_t* res_music_end;
 
+typedef struct noise_t {
+	uint8_t counter;
+	double parts[5];
+	double total;
+} noise_t;
+
 static int noise_stream(int size, void* data, void* user) {
+	noise_t* noise = user;
 	uint8_t* raw = data;
 	for (int i = 0; i < size; ++i) {
-		raw[i] = (uint8_t)mint_random(0, UINT8_MAX);
+		noise->counter = (uint8_t)((noise->counter + 1u) & 0xFu);
+		int p = 4;
+		if (noise->counter != 0) {
+			p = __builtin_clz(noise->counter);
+		}
+		noise->total -= noise->parts[p];
+		noise->parts[p] = mint_random(-0.2, 0.2);
+		noise->total += noise->parts[p];
+		raw[i] = (uint8_t)((noise->total + 1) * 128);
 	}
 	return size;
 }
@@ -87,8 +102,9 @@ void res_init() {
 	res_sound_beat = minta_sound_load("res/sound/beat.ogg", MINT_FILE_LOCAL);
 	res_sound_break = minta_sound_load("res/sound/break.ogg", MINT_FILE_LOCAL);
 
+	static noise_t noise;
 	res_music_game = minta_music_load("res/music/game.ogg", MINT_FILE_LOCAL);
-	res_music_noise = minta_music_create(MINTA_STEREO8, 44100, noise_stream, NULL);
+	res_music_noise = minta_music_create(MINTA_MONO8, 44100, noise_stream, &noise);
 	res_music_end = minta_music_load("res/music/end.ogg", MINT_FILE_LOCAL);
 
 	mintg_image_t* icon = mintg_image_load("res/image/icon.png", MINT_FILE_LOCAL);
