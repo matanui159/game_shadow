@@ -90,4 +90,8 @@ void res_init() {
 	res_music_game = minta_music_load("res/music/game.ogg", MINT_FILE_LOCAL);
 	res_music_noise = minta_music_create(MINTA_STEREO8, 44100, noise_stream, NULL);
 	res_music_end = minta_music_load("res/music/end.ogg", MINT_FILE_LOCAL);
+
+	mintg_image_t* icon = mintg_image_load("res/image/icon.png", MINT_FILE_LOCAL);
+	mintg_image_icon(icon);
+	mintg_image_destroy(icon);
 }
