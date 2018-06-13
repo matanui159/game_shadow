@@ -26,13 +26,14 @@
 #include "../messages.h"
 
 static void menu_message(const char* const* messages, int count) {
+	const char* message = messages[(int)mint_random(0, count)];
+	double x = mintg_width() / 2.0 - mintg_font_width(res_font_messy, message) / 2.0;
+	double y = mintg_height() / 2.0 - mintg_font_height(res_font_messy) / 2.0;
+
 	mintg_push();
-	mintg_translate(
-			mint_random(-mintg_width() / 2.0, mintg_width() / 2.0),
-			mint_random(-mintg_height() / 2.0, mintg_height() / 2.0)
-	);
+	mintg_translate(mint_random(-x, x), mint_random(-y, y));
 	mintg_color(0.5, 0.5, 0.5, 1);
-	mintg_font_draw(res_font_messy, messages[(int)mint_random(0, count)]);
+	mintg_font_draw(res_font_messy, message);
 	mintg_pop();
 }
 
