@@ -89,7 +89,7 @@ player_t* shadow_update(double time) {
 		shadow->x += shadow->vx * time;
 		shadow->y += shadow->vy * time;
 
-		if (dist < 24) {
+		if (dist < 16) {
 			if (shadow->attack) {
 				if (shadow->target != NULL) {
 					if (shadow->target == &player_nsw || !player_nsw.alive) {
@@ -118,10 +118,10 @@ player_t* shadow_update(double time) {
 			}
 		}
 
-		if (player_qld.alive && shadow_dist(shadow, player_qld.x.v, player_qld.y.v, NULL, NULL) < 24) {
+		if (player_qld.alive && shadow_dist(shadow, player_qld.x.v, player_qld.y.v, NULL, NULL) < 16) {
 			return &player_qld;
 		}
-		if (player_nsw.alive && shadow_dist(shadow, player_nsw.x.v, player_nsw.y.v, NULL, NULL) < 24) {
+		if (player_nsw.alive && shadow_dist(shadow, player_nsw.x.v, player_nsw.y.v, NULL, NULL) < 16) {
 			return &player_nsw;
 		}
 
