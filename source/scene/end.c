@@ -73,12 +73,12 @@ void end_scene(scene_state_t state, double time) {
 		if (timer >= 0.3) {
 			double f = interp_value(&final, time);
 			mintg_image_t* eye = NULL;
-			if (f < 0.8) {
+			if (f < 0.6) {
 				eye = res_image_eye[0];
 			} else if (f > 1) {
 				eye = res_image_eye[4];
 			} else {
-				eye = res_image_eye[(int)((f - 0.8) / 0.05)];
+				eye = res_image_eye[(int)((f - 0.6) / 0.1)];
 			}
 
 			mintg_color(1, 1, 1, 1);
