@@ -64,9 +64,9 @@ static uint8_t noise_mono_stream(noise_mono_t* noise) {
 		p = __builtin_ctz(noise->counter);
 	}
 	noise->total -= noise->parts[p];
-	noise->parts[p] = mint_random(-0.1, 0.1);
+	noise->parts[p] = mint_random(-0.2, 0.2);
 	noise->total += noise->parts[p];
-	return (uint8_t)((noise->total + 1) * 128);
+	return (uint8_t)((noise->total + mint_random(-0.2, 0.2) + 1) * 128);
 }
 
 static int noise_stream(int size, void* data, void* user) {
