@@ -70,20 +70,23 @@ void death_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static half_t left;
 	static half_t right;
+	static _Bool sound;
 
 	if (state == SCENE_INIT) {
 
 		interp_init(&fade, 2);
 		half_init(&left, g_player, -1);
 		half_init(&right, g_player, 1);
+		sound = 0;
 
 	} else if (state == SCENE_UPDATE) {
 
 		interp_update(&fade);
 		fade.v -= time;
 		if (fade.v <= 1) {
-			if (fade.old >= 1) {
+			if (!sound) {
 				minta_sound_play(res_sound_break);
+				sound = 1;
 			}
 			half_update(&left, time);
 			half_update(&right, time);
@@ -98,6 +101,7 @@ void death_scene(scene_state_t state, double time) {
 		}
 		minta_music_volume(res_music_game, volume * volume);
 		minta_music_update(res_music_game);
+
 	} else if (state == SCENE_DRAW) {
 
 		double alpha = interp_value(&fade, time);

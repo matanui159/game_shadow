@@ -26,6 +26,7 @@ typedef struct player_t {
 	interp_t x;
 	interp_t y;
 	interp_t scale;
+	int beats;
 	double r;
 	double g;
 	double b;

@@ -29,6 +29,7 @@ void end_scene(scene_state_t state, double time) {
 	static int message;
 	static double timer;
 	static interp_t final;
+	static int beats;
 
 	if (state == SCENE_INIT) {
 
@@ -38,6 +39,7 @@ void end_scene(scene_state_t state, double time) {
 		button_init(&btn_message);
 		button_init(&btn_exit);
 		interp_init(&final, 0);
+		beats = 0;
 		player_init();
 
 	} else if (state == SCENE_UPDATE) {
@@ -45,14 +47,16 @@ void end_scene(scene_state_t state, double time) {
 		interp_update(&final);
 
 		timer += time;
-		if (timer >= 0.1 && timer <= 0.1 + time) {
+		if (timer >= 0.1 && beats < 1) {
 			minta_sound_play(res_sound_beat);
+			++beats;
 		}
 
 		if (timer >= 0.3) {
-			if (timer <= 0.3 + time) {
+			if (beats < 2) {
 				minta_sound_play(res_sound_beat);
 				minta_music_play(res_music_end);
+				++beats;
 			}
 
 			if (message < messages_end_count - 1) {
