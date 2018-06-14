@@ -45,7 +45,7 @@ void player_init() {
 	}
 }
 
-static void player_update1(player_t* player, double time, _Bool active) {
+static void player_update1(player_t* player, double time, _Bool active, _Bool alone) {
 	if (player->alive) {
 		interp_update(&player->x);
 		interp_update(&player->y);
@@ -80,6 +80,11 @@ static void player_update1(player_t* player, double time, _Bool active) {
 		if (player->time >= 1) {
 			player->time = 0;
 		}
+
+		if (alone) {
+			player->x.v += mint_random(-2, 2);
+			player->y.v += mint_random(-1, 1);
+		}
 	}
 }
 
@@ -92,10 +97,10 @@ void player_update(_Bool game, double time) {
 			}
 		case MINTG_INPUT_KEYUP:
 			if (player_qld.alive) {
-				player_update1(&player_qld, time, 1);
-				player_update1(&player_nsw, time, 0);
+				player_update1(&player_qld, time, 1, game && !player_nsw.alive);
+				player_update1(&player_nsw, time, 0, 0);
 			} else {
-				player_update1(&player_nsw, time, 1);
+				player_update1(&player_nsw, time, 1, game);
 			}
 			break;
 
@@ -105,16 +110,16 @@ void player_update(_Bool game, double time) {
 			}
 		case MINTG_INPUT_KEYDOWN:
 			if (player_nsw.alive) {
-				player_update1(&player_qld, time, 0);
-				player_update1(&player_nsw, time, 1);
+				player_update1(&player_qld, time, 0, 0);
+				player_update1(&player_nsw, time, 1, game && !player_qld.alive);
 			} else {
-				player_update1(&player_qld, time, 1);
+				player_update1(&player_qld, time, 1, game);
 			}
 			break;
 	}
 
 	if (!player_qld.alive && !player_nsw.alive) {
-		player_update1(&player_act, time, 1);
+		player_update1(&player_act, time, 1, 0);
 	}
 
 	if (game) {
