@@ -23,6 +23,7 @@
 void button_init(button_t* button) {
 	button->time = 0;
 	interp_init(&button->scale, 1);
+	button->alpha = 1;
 }
 
 _Bool button_update(button_t* button, double time) {
@@ -63,7 +64,7 @@ void button_draw(button_t* button, double time) {
 	mintg_translate(button->x, button->y);
 	mintg_scale(scale, scale);
 	mintg_translate(0, 5);
-	mintg_color(1, 1, 1, 1);
+	mintg_color(1, 1, 1, button->alpha);
 	mintg_font_draw(res_font_clean, button->text);
 	mintg_pop();
 

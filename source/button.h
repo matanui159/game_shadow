@@ -29,6 +29,7 @@ typedef struct button_t {
 	interp_t scale;
 	_Bool hover;
 	mintg_input_state_t state;
+	double alpha;
 } button_t;
 
 void button_init(button_t* button);

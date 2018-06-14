@@ -21,9 +21,11 @@
 #include "../button.h"
 #include "../player.h"
 #include "../messages.h"
+#include <stdlib.h>
 
 void end_scene(scene_state_t state, double time) {
 	static button_t btn_message = {"", "", 0, -200};
+	static button_t btn_exit = {"Quit", "", 0, -300};
 	static int message;
 	static double timer;
 	static interp_t final;
@@ -33,6 +35,8 @@ void end_scene(scene_state_t state, double time) {
 		message = 0;
 		btn_message.text = messages_end[message];
 		timer = 0;
+		button_init(&btn_message);
+		button_init(&btn_exit);
 		interp_init(&final, 0);
 		player_init();
 
@@ -58,6 +62,9 @@ void end_scene(scene_state_t state, double time) {
 				}
 			} else {
 				final.v += time;
+				if (final.v > 5 && button_update(&btn_exit, time)) {
+					exit(0);
+				}
 			}
 
 			player_update(0, time);
@@ -115,6 +122,11 @@ void end_scene(scene_state_t state, double time) {
 				mintg_translate(200, -250);
 				mintg_font_draw(res_font_clean_small, "Music by Bensound.com");
 				mintg_pop();
+			}
+
+			if (f > 5) {
+				btn_exit.alpha = (f - 5) * (f - 5);
+				button_draw(&btn_exit, time);
 			}
 
 			player_draw(0, time);
