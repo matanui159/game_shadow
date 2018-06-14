@@ -16,23 +16,6 @@
  * limitations under the License.
 ]]
 
-add_executable(shadow "${CMAKE_CURRENT_SOURCE_DIR}/main.c")
-set_target_properties(shadow PROPERTIES C_STANDARD 99)
-target_compile_options(shadow PRIVATE -Wall -Wpedantic)
-target_link_libraries(shadow PRIVATE mint)
-
-if (CMAKE_BUILD_TYPE STREQUAL Release AND WIN32)
-	set_target_properties(shadow PROPERTIES LINK_FLAGS -mwindows)
-endif()
-
 target_sources(shadow PRIVATE
-		"${CMAKE_CURRENT_SOURCE_DIR}/res.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/fade_buffer.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/button.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/player.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/shadow.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/messages.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/icon.rc"
 )
-
-add_subdirectory(scene)
-add_subdirectory(icon)
