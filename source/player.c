@@ -71,10 +71,10 @@ static void player_update1(player_t* player, double time, _Bool active, _Bool al
 
 		player->time += time;
 		player->scale.v = pow(0.001, time) * player->scale.v;
-		if (player->time >= 0.6 && player->time < 0.6 + time) {
+		if (player->time >= 0.6 && player->time <= 0.6 + time) {
 			player->scale.v = 0.2;
 		}
-		if (player->time >= 0.8 && player->time < 0.8 + time) {
+		if (player->time >= 0.8 && player->time <= 0.8 + time) {
 			player->scale.v = 0.2;
 		}
 		if (player->time >= 1) {
@@ -127,10 +127,10 @@ void player_update(_Bool game, double time) {
 		if (!player_qld.alive) {
 			timer = player_nsw.time;
 		}
-		if (timer >= 0.6 && timer < 0.6 + time) {
+		if (timer >= 0.6 && timer <= 0.6 + time) {
 			minta_sound_play(res_sound_beat);
 		}
-		if (timer >= 0.8 && timer < 0.8 + time) {
+		if (timer >= 0.8 && timer <= 0.8 + time) {
 			minta_sound_play(res_sound_beat);
 		}
 	}

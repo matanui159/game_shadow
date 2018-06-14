@@ -45,12 +45,12 @@ void end_scene(scene_state_t state, double time) {
 		interp_update(&final);
 
 		timer += time;
-		if (timer >= 0.1 && timer < 0.1 + time) {
+		if (timer >= 0.1 && timer <= 0.1 + time) {
 			minta_sound_play(res_sound_beat);
 		}
 
 		if (timer >= 0.3) {
-			if (timer < 0.3 + time) {
+			if (timer <= 0.3 + time) {
 				minta_sound_play(res_sound_beat);
 				minta_music_play(res_music_end);
 			}

@@ -82,7 +82,7 @@ void death_scene(scene_state_t state, double time) {
 		interp_update(&fade);
 		fade.v -= time;
 		if (fade.v <= 1) {
-			if (fade.old > 1) {
+			if (fade.old >= 1) {
 				minta_sound_play(res_sound_break);
 			}
 			half_update(&left, time);
