@@ -17,6 +17,7 @@
  */
  
 #include "end.h"
+#include "game.h"
 #include "../res.h"
 #include "../button.h"
 #include "../player.h"
@@ -131,6 +132,14 @@ void end_scene(scene_state_t state, double time) {
 			if (f > 5) {
 				btn_exit.alpha = (f - 5) * (f - 5);
 				button_draw(&btn_exit, time);
+			}
+
+			if (f > 7) {
+				mintg_push();
+				mintg_translate(0, 300);
+				mintg_color(1, 1, 1, (f - 7) * (f - 7));
+				mintg_font_draw(res_font_clean_small, "You survived a total of %.1f seconds", game_time());
+				mintg_pop();
 			}
 
 			player_draw(0, time);

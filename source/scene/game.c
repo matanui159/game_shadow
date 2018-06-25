@@ -22,6 +22,12 @@
 #include "../player.h"
 #include "../shadow.h"
 
+static double g_time = 0;
+
+double game_time() {
+	return g_time;
+}
+
 void game_scene(scene_state_t state, double time) {
 	static interp_t fade;
 	static mintg_image_t* buffer;
@@ -46,6 +52,7 @@ void game_scene(scene_state_t state, double time) {
 		minta_music_volume(res_music_game, 1);
 		minta_music_update(res_music_game);
 		fade.v -= time;
+		g_time += time;
 
 	} else if (state == SCENE_DRAW) {
 

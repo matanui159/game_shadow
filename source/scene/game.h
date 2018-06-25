@@ -20,6 +20,7 @@
 #define SHADOW_SCENE_GAME_H_
 #include "../main.h"
 
+double game_time();
 void game_scene(scene_state_t state, double time);
 
 #endif
